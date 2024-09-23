@@ -425,7 +425,7 @@
       </li>
     </ul>
     <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-      <form action="{{asset('vendor')}}/" method="get" autocomplete="off" novalidate>
+      {{-- <form action="{{asset('vendor')}}/" method="get" autocomplete="off" novalidate>
         <div class="input-icon">
           <span class="input-icon-addon">
             <!-- Download SVG icon from http://tabler-icons.io/i/search -->
@@ -433,6 +433,6 @@
           </span>
           <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
         </div>
-      </form>
+      </form> --}}
     </div>
   </div>
