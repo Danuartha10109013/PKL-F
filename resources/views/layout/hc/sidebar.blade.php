@@ -48,8 +48,8 @@
     </li>
     
     <!-- Menu Kelola Kontrak -->
-    <li class="nav-item {{ Route::currentRouteName() == 'pusat.kelola-kontrak' ? 'active' : '' }}">
-      <a class="nav-link" href="">
+    <li class="nav-item {{ Route::currentRouteName() == 'hc.kelola-kontrak' ? 'active' : '' }}">
+      <a class="nav-link" href="{{route('hc.kelola-kontrak')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
           <i class="ti ti-book"></i>
         </span>
@@ -60,8 +60,8 @@
     </li>
 
     <!-- Menu Kelola Project -->
-    <li class="nav-item {{ Route::currentRouteName() == 'pusat.kelola-project' ? 'active' : '' }}">
-      <a class="nav-link" href="">
+    <li class="nav-item {{ Route::currentRouteName() == 'hc.kelola-project' ? 'active' : '' }}">
+      <a class="nav-link" href="{{route('hc.kelola-project')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
           <i class="ti ti-current-location"></i>
         </span>
@@ -72,8 +72,8 @@
     </li>
 
     <!-- Menu Kelola Gaji -->
-    <li class="nav-item {{ Route::currentRouteName() == 'pusat.kelola-gaji' ? 'active' : '' }}">
-      <a class="nav-link" href="">
+    <li class="nav-item {{ Route::currentRouteName() == 'hc.kelola-gaji' ? 'active' : '' }}">
+      <a class="nav-link" href="{{route('hc.kelola-gaji')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
           <i class="ti ti-cash"></i>
         </span>

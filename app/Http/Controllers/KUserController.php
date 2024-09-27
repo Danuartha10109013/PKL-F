@@ -8,7 +8,17 @@ use Illuminate\Support\Facades\Hash;
 
 class KUserController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        //search
+        $search = $request->input('search');
+
+        // Modify the query to include search functionality
+        $hasil = User::when($search, function ($query, $search) {
+            return $query->where('name', 'like', '%' . $search . '%')  // Search by name
+                        ->orWhere('email', 'like', '%' . $search . '%')  // Search by email
+                        ->orWhere('no_pegawai', 'like', '%' . $search . '%'); // Search by no_pegawai
+        })->paginate(10);
+
         $lastUser = User::orderBy('no_pegawai', 'desc')->first();
 
         if ($lastUser && preg_match('/^EMP(\d+)$/', $lastUser->no_pegawai, $matches)) {
@@ -20,12 +30,13 @@ class KUserController extends Controller
         }
 
         $data = User::paginate(10);
-        $count = User::where('role', '!=', 4)->count();
+        $count = User::all()->count();
         $countpegawai = User::where('role',1)->count();
         $counthc = User::where('role',0)->count();
-        $countmanajerhc = User::where('role',3)->count();
+        $countmhc = User::where('role',3)->count();
         $countkapro = User::where('role',2)->count();
-        return view('pages.hc.kelolauser.index',compact('data','count','countpegawai','counthc','countmanajerhc','countkapro','newNoPegawai'));
+        $countpusat = User::where('role',4)->count();
+        return view('pages.hc.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
     }
 
     public function store(Request $request)
@@ -116,5 +127,18 @@ class KUserController extends Controller
 
     return redirect()->back()->with('success', 'User updated successfully');
 }
+
+public function delete($id)
+{
+    $item = User::find($id);
+
+    if ($item) {
+        $item->delete();
+        return redirect()->back()->with('success', 'Item deleted successfully.');
+    }
+
+    return redirect()->back()->with('error', 'Item not found.');
+}
+
 
 }

@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashbardController;
+use App\Http\Controllers\KGajiController;
+use App\Http\Controllers\KKontrakController;
+use App\Http\Controllers\KProjectController;
 use App\Http\Controllers\KUserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
@@ -44,6 +47,18 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/active/{id}',[KUserController::class,'active'])->name('kelola-user.active');
             Route::get('/nonactive/{id}',[KUserController::class,'nonactive'])->name('kelola-user.nonactive');
             Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
+            Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
+        });
+        //K Project
+        Route::prefix('k-project')->group(function () {
+            Route::get('/',[KProjectController::class,'index'])->name('kelola-project');
+        });
+        //K Gaji
+        Route::prefix('k-gaji')->group(function () {
+            Route::get('/',[KGajiController::class,'index'])->name('kelola-gaji');
+        });
+        Route::prefix('k-kontrak')->group(function () {
+            Route::get('/',[KKontrakController::class,'index'])->name('kelola-kontrak');
         });
     });
 
