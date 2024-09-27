@@ -54,7 +54,7 @@ class ProfileController extends Controller
     $user->save();
 
     // Redirect back with success message
-    return redirect()->route('pegawai.profile', $request->user_id)
+    return redirect()->route('profile', $request->user_id)
                      ->with('success', 'Account updated successfully');
 }
 

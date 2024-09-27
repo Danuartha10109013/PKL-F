@@ -21,7 +21,7 @@ Dashboard || Pegawai
       <div class="container-xl">
         <div class="card">
           <div class="row g-0">
-            <form action="{{route('pegawai.profile.update')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('profile.update')}}" method="POST" enctype="multipart/form-data">
               @csrf
               @method('PUT')
             <div class="col-12 col-md-12 d-flex flex-column">

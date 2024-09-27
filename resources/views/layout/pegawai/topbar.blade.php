@@ -118,7 +118,8 @@
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-          <a href="{{route('pegawai.profile',Auth::user()->id)}}" class="dropdown-item">Profile</a>
+          <a href="{{route('profile',Auth::user()->id)}}" class="dropdown-item">Profile</a>
+         
           <div class="dropdown-divider"></div>
           <a href="{{route('logout')}}" class="dropdown-item">Logout</a>
         </div>

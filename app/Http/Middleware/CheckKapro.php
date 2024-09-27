@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckHC
+class CheckKapro
 {
     public function handle($request, Closure $next)
     {
-        // Periksa apakah pengguna adalah admin (role = 0)
+        // Periksa apakah pengguna adalah kapro (role = 2)
         if (Auth::check()) {
-            if (Auth::user()->role == 0){
+            if (Auth::user()->role == 2){
                 return $next($request);
             }
             return response()->view('errors.custom', ['message' => 'Anda Bukan Admin'], 403);

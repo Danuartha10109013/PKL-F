@@ -14,6 +14,9 @@
     <link href="{{asset('vendor')}}/dist/css/tabler-payments.min.css?1692870487" rel="stylesheet"/>
     <link href="{{asset('vendor')}}/dist/css/tabler-vendors.min.css?1692870487" rel="stylesheet"/>
     <link href="{{asset('vendor')}}/dist/css/demo.min.css?1692870487" rel="stylesheet"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
       @import url('https://rsms.me/inter/inter.css');
       :root {
@@ -30,7 +33,7 @@
       <div class="container container-tight mt-5 py-4">
         <div class="text-center mt-4">
           <a href="https://www.wika.co.id/" class="navbar-brand navbar-brand-autodark">
-            <img src="{{asset('wika logo.png')}}" width="150%"  alt="Tabler" class="navbar-brand-image">
+            <img src="{{asset('wika logo.png')}}" width="200"  alt="Tabler" class="navbar-brand-image">
           </a>
         </div>
         <div class="card card-md">
@@ -39,6 +42,41 @@
             <form action="{{route('login-proses')}}"   method="POST" autocomplete="off" novalidate>
               @method('POST')
                 @csrf
+                @if (session('success'))
+                  <script>
+                      Swal.fire({
+                          icon: 'success',
+                          title: 'Success!',
+                          text: '{{ session('success') }}',
+                          showConfirmButton: false,
+                          timer: 3000
+                      });
+                  </script>
+              @endif
+
+              @if (session('error'))
+                  <script>
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error!',
+                          text: '{{ session('error') }}',
+                          showConfirmButton: false,
+                          timer: 3000
+                      });
+                  </script>
+              @endif
+
+              @if ($errors->any())
+                  <script>
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Validation Error!',
+                          html: '<ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>',
+                          showConfirmButton: true
+                      });
+                  </script>
+              @endif
+
               <div class="mb-3">
                 <label class="form-label">Username Or Email</label>
                 <input type="text" name="username" class="form-control" placeholder="username or email" autocomplete="off">
