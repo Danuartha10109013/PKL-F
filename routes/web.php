@@ -37,8 +37,6 @@ Route::middleware([AutoLogout::class])->group(function () {
         // Dashboard
         Route::get('/', [DashbardController::class, 'hc'])->name('dashboard'); //not same
 
-
-
         // Manage Employees
         Route::prefix('k-user')->group(function () {
             Route::get('/',[KUserController::class,'index'])->name('kelola-user');
@@ -49,9 +47,16 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
             Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
         });
+        
+
         //K Project
         Route::prefix('k-project')->group(function () {
             Route::get('/',[KProjectController::class,'index'])->name('kelola-project');
+            Route::get('/add',[KProjectController::class,'add'])->name('kelola-project.add');
+            Route::post('/store',[KProjectController::class,'store'])->name('kelola-project.store');
+            Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
+            Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
+
         });
         //K Gaji
         Route::prefix('k-gaji')->group(function () {
@@ -70,6 +75,17 @@ Route::middleware([AutoLogout::class])->group(function () {
 
     Route::group(['prefix' => 'kapro', 'middleware' => ['kapro'], 'as' => 'kapro.'], function () {
         Route::get('/', [DashbardController::class, 'kapro'])->name('dashboard'); //not same
+
+        // Manage Employees
+        Route::prefix('k-user')->group(function () {
+            Route::get('/',[KUserController::class,'index'])->name('kelola-user');
+            Route::get('/add',[KUserController::class,'add'])->name('kelola-user.add');
+            Route::post('/store',[KUserController::class,'store'])->name('kelola-user.store');
+            Route::get('/active/{id}',[KUserController::class,'active'])->name('kelola-user.active');
+            Route::get('/nonactive/{id}',[KUserController::class,'nonactive'])->name('kelola-user.nonactive');
+            Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
+            Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
+        });
         
     });
 

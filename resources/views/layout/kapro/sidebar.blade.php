@@ -2,27 +2,37 @@
     <ul class="navbar-nav">
       <li class="nav-item active">
         @php
-          $role = Auth::user()->role
+          $role = Auth::user()->role;
+          $dashboardRoute = '';
+          
+          switch ($role) {
+              case 0:
+                  $dashboardRoute = 'hc.dashboard';
+                  break;
+              case 1:
+                  $dashboardRoute = 'pegawai.dashboard';
+                  break;
+              case 2:
+                  $dashboardRoute = 'kapro.dashboard';
+                  break;
+              case 3:
+                  $dashboardRoute = 'manajerhc.dashboard';
+                  break;
+              case 4:
+                  $dashboardRoute = 'pusat.dashboard';
+                  break;
+          }
         @endphp
-        @if ($role == 0)       
-          <a class="nav-link" href="{{route('hc.dashboard')}}" >       
-        @elseif($role == 1)       
-          <a class="nav-link" href="{{route('pegawai.dashboard')}}" >      
-        @elseif($role == 2)      
-          <a class="nav-link" href="{{route('kapro.dashboard')}}" >        
-        @elseif($role == 3)
-          <a class="nav-link" href="{{route('manajerhc.dashboard')}}" >       
-        @elseif($role == 4)
-        <a class="nav-link" href="{{route('pusat.dashboard')}}" >
-        @endif
-          <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <i class="ti ti-home"></i>
-          </span>
-          <span class="nav-link-title">
-            Home
-          </span>
-        </a>
-      </li>
+          <li class="nav-item {{ Route::currentRouteName() == $dashboardRoute ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route($dashboardRoute) }}">
+              <span class="nav-link-icon d-md-none d-lg-inline-block">
+                <i class="ti ti-home"></i>
+              </span>
+              <span class="nav-link-title">
+                Home
+              </span>
+            </a>
+          </li>
       {{-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
@@ -237,8 +247,9 @@
         </a>
       </li> --}}
       
-      <li class="nav-item">
-        <a class="nav-link" href="{{route('pusat.dashboard')}}" >
+
+      <li class="nav-item {{ Route::currentRouteName() == 'kapro.dashboard' ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('kapro.dashboard')}}" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
             <i class="ti ti-user"></i>
           </span>
@@ -248,8 +259,8 @@
         </a>
       </li>
       
-       <li class="nav-item">
-        <a class="nav-link" href="{{route('pusat.dashboard')}}" >
+       <li class="nav-item {{ Route::currentRouteName() == 'kapro.kelola-user' ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('kapro.kelola-user')}}" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
             <i class="ti ti-book"></i>
           </span>

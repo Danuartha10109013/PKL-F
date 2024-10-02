@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class KUserController extends Controller
@@ -14,9 +15,9 @@ class KUserController extends Controller
 
         // Modify the query to include search functionality
         $hasil = User::when($search, function ($query, $search) {
-            return $query->where('name', 'like', '%' . $search . '%')  // Search by name
-                        ->orWhere('email', 'like', '%' . $search . '%')  // Search by email
-                        ->orWhere('no_pegawai', 'like', '%' . $search . '%'); // Search by no_pegawai
+            return $query->where('name', 'like', '%' . $search . '%')  
+                        ->orWhere('email', 'like', '%' . $search . '%')  
+                        ->orWhere('no_pegawai', 'like', '%' . $search . '%'); 
         })->paginate(10);
 
         $lastUser = User::orderBy('no_pegawai', 'desc')->first();
@@ -28,15 +29,23 @@ class KUserController extends Controller
             // If no users exist, start with EMP001
             $newNoPegawai = 'EMP001';
         }
-
-        $data = User::paginate(10);
+        if(Auth::user()->role == 2) {
+            $data = User::where('project_id', $newNoPegawai)->paginate(10);
+            // $data = User::paginate(10);
+        }else{
+            $data = User::paginate(10);
+        }
         $count = User::all()->count();
         $countpegawai = User::where('role',1)->count();
         $counthc = User::where('role',0)->count();
         $countmhc = User::where('role',3)->count();
         $countkapro = User::where('role',2)->count();
         $countpusat = User::where('role',4)->count();
-        return view('pages.hc.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
+        if(Auth::user()->role == 0){
+            return view('pages.hc.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
+        }else{
+            return view('pages.kapro.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
+        }
     }
 
     public function store(Request $request)
@@ -74,7 +83,7 @@ class KUserController extends Controller
         $user->email_verified_at = now();
         $user->save();
 
-        return redirect()->route('hc.kelola-user')->with('success', 'User created successfully');
+        return redirect()->route('kapro.kelola-user')->with('success', 'User created successfully');
     }
 
     public function active($id){

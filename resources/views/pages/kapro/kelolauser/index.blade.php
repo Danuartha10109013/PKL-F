@@ -18,7 +18,7 @@ Kelola User || Human Capital
       </div>
       <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
         <!-- Search Form -->
-        <form action="{{ route('hc.kelola-user') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
+        <form action="{{ route('kapro.kelola-user') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
             <input type="text" id="searchInput" name="search" class="form-control w-100" 
                    placeholder="Search users..." value="{{ request()->query('search') }}">
             
@@ -34,24 +34,27 @@ Kelola User || Human Capital
         </form>
     
         <!-- Tambahkan Pegawai Baru Button -->
-        <a href="{{route('hc.kelola-user.add')}}" class="btn btn-primary d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
+        <a href="{{route('kapro.kelola-user.add')}}" class="btn btn-primary d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M12 5l0 14" />
                 <path d="M5 12l14 0" />
             </svg>
-            Tambahkan User Baru
+            Tambahkan Pegawai Baru
         </a>
     </div>
     
     <script>
         document.getElementById('clearSearch').addEventListener('click', function() {
             document.getElementById('searchInput').value = ''; // Clear the input value
-            window.location.href = "{{ route('hc.kelola-user') }}"; // Redirect to the base route
+            window.location.href = "{{ route('kapro.kelola-user') }}"; // Redirect to the base route
         });
     </script>
+    
+    
+    
       </div>
-     
+      
     </div>
   </div>
 </div>
@@ -110,7 +113,7 @@ Kelola User || Human Capital
                       @if ($d->active == 0)
                       <a href="{{route('hc.kelola-user.active',$d->id)}}"><i class="btn btn-warning" >Non Active</i></a>
                       @elseif ($d->active == 1)
-                      <a href="{{route('hc.kelola-user.nonactive',$d->id)}}"><i class="btn btn-success">Active</i></a>
+                      <a href="{{route('kapro.kelola-user.nonactive',$d->id)}}"><i class="btn btn-success">Active</i></a>
                       @endif
                       
                         <!-- Delete button triggers modal -->
@@ -131,7 +134,7 @@ Kelola User || Human Capital
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form action="{{ route('hc.kelola-user.delete', $d->id) }}" method="POST">
+                                        <form action="{{ route('kapro.kelola-user.delete', $d->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Yes, Delete</button>
@@ -150,7 +153,7 @@ Kelola User || Human Capital
                             <h5 class="modal-title">New user</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="{{route('hc.kelola-user.store')}}" method="POST" enctype="multipart/form-data">
+                          <form action="{{route('kapro.kelola-user.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                               <div class="mb-3">
@@ -300,7 +303,7 @@ Kelola User || Human Capital
                             <h5 class="modal-title">Edit user</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="{{ route('hc.kelola-user.update', $d->id) }}" method="POST" enctype="multipart/form-data">
+                          <form action="{{ route('kapro.kelola-user.update', $d->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
@@ -429,9 +432,9 @@ Kelola User || Human Capital
                     <td class="text-nowrap">
                       <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-report-edit-{{ $d->id }}">Edit</a>
                       @if ($d->active == 0)
-                      <a href="{{route('hc.kelola-user.active',$d->id)}}"><i class="btn btn-warning" >Non Active</i></a>
+                      <a href="{{route('kapro.kelola-user.active',$d->id)}}"><i class="btn btn-warning" >Non Active</i></a>
                       @elseif ($d->active == 1)
-                      <a href="{{route('hc.kelola-user.nonactive',$d->id)}}"><i class="btn btn-success">Active</i></a>
+                      <a href="{{route('kapro.kelola-user.nonactive',$d->id)}}"><i class="btn btn-success">Active</i></a>
                       @endif
                       
                         <!-- Delete button triggers modal -->
@@ -452,7 +455,7 @@ Kelola User || Human Capital
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form action="{{ route('hc.kelola-user.delete', $d->id) }}" method="POST">
+                                        <form action="{{ route('kapro.kelola-user.delete', $d->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Yes, Delete</button>
@@ -471,7 +474,7 @@ Kelola User || Human Capital
                             <h5 class="modal-title">New user</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="{{route('hc.kelola-user.store')}}" method="POST" enctype="multipart/form-data">
+                          <form action="{{route('kapro.kelola-user.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                               <div class="mb-3">
@@ -621,7 +624,7 @@ Kelola User || Human Capital
                             <h5 class="modal-title">Edit user</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="{{ route('hc.kelola-user.update', $d->id) }}" method="POST" enctype="multipart/form-data">
+                          <form action="{{ route('kapro.kelola-user.update', $d->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
@@ -773,7 +776,7 @@ Kelola User || Human Capital
                 <div class="d-flex align-items-center">
                   <div class="subheader">Total Kepala Project</div>   
                 </div>
-                <div class="h1 mt-2">{{$counthc}}</div>
+                <div class="h1 mt-2">{{$countkapro}}</div>
                 
               </div>
             </div>
