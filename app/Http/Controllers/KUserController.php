@@ -61,6 +61,7 @@ class KUserController extends Controller
             'role' => 'required|integer',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Validating image file
             'status' => 'required|boolean',
+            'posisi' => 'required',
         ]);
 
         // Handle avatar upload
@@ -76,14 +77,16 @@ class KUserController extends Controller
         $user->name = $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
+        $user->posisi = $request->posisi;
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
         $user->active = $request->status;
+        $user->posisi = $request->posisi;
         $user->profile = $avatarPath; // Save the avatar path if uploaded
         $user->email_verified_at = now();
         $user->save();
 
-        return redirect()->route('kapro.kelola-user')->with('success', 'User created successfully');
+        return redirect()->back()->with('success', 'User created successfully');
     }
 
     public function active($id){
@@ -109,6 +112,7 @@ class KUserController extends Controller
     // Validate the input
     $validated = $request->validate([
         'name' => 'required|string|max:255',
+        'posisi' => 'required|string|max:255',
         'username' => 'required|string|max:255|unique:users,username,' . $user->id,
         'email' => 'required|email|max:255|unique:users,email,' . $user->id,
         'password' => 'nullable|string|min:6|confirmed', // Optional password, 'confirmed' rule for password confirmation
@@ -119,6 +123,7 @@ class KUserController extends Controller
     $user->name = $request->name;
     $user->username = $request->username;
     $user->email = $request->email;
+    $user->posisi = $request->posisi;
 
     // If a new password is provided, hash it and update
     if ($request->filled('password')) {

@@ -29,7 +29,6 @@ Route::middleware([AutoLogout::class])->group(function () {
         //Dashboard
         Route::get('/', [DashbardController::class, 'pegawai'])->name('dashboard'); //not same
 
-
     });
 
     // Admin routes group with middleware and prefix
@@ -48,7 +47,6 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
         });
         
-
         //K Project
         Route::prefix('k-project')->group(function () {
             Route::get('/',[KProjectController::class,'index'])->name('kelola-project');

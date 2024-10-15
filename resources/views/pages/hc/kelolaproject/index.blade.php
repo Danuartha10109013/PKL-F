@@ -145,7 +145,8 @@ Kelola Project || Human Capital
                     <tr>
                       <th>No</th>
                       <th>Judul</th>
-                      <th>Subjudul</th>
+                      <th>Kode Project</th>
+                      <th>Divisi</th>
                       <th>Status</th>
                       <th>Ketua Project</th>
                       <th>Action</th>
@@ -160,9 +161,10 @@ Kelola Project || Human Capital
                       <td class="w-1">{{$d->judul}}</td>
                       <td class="td-truncate">
                         <div class="text-truncate">
-                          {{$d->subjudul}}
+                          {{$d->kode_project}}
                         </div>
                       </td>
+                      <td>{{$d->divisi}}</td>
                       <td class="text-nowrap">
                         @if ($d->status == 0)
                           <span style="color: red" >Inactive</span>
@@ -175,8 +177,8 @@ Kelola Project || Human Capital
                       </td>
                       <td class="text-nowrap text-secondary">
                         @php
-                           $namekapro = \App\Models\User::where('project_id', $d->id)->value('name') ?? 'No Project Leader';
-                           $profile = \App\Models\User::where('project_id', $d->id)->value('profile');
+                           $namekapro = \App\Models\User::where('id', $d->kapro_id)->value('name') ?? 'No Project Leader';
+                           $profile = \App\Models\User::where('id', $d->kapro_id)->value('profile');
                           @endphp
                       <span class="avatar avatar-sm" style="background-image: url({{ asset('storage/' . $profile) }})"></span>
                         {{$namekapro}}
@@ -231,32 +233,70 @@ Kelola Project || Human Capital
                                     @csrf
                                     @method('PUT') <!-- Use PUT for updating a resource -->
                                     <div class="modal-body">
-                    
-                                        <div class="mb-3">
-                                            <label class="form-label">Judul</label>
-                                            <input type="text" class="form-control" name="judul" value="{{ old('judul', $d->judul) }}" placeholder="Isi Judul" required>
-                                            @error('judul')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Sub Judul (optional)</label>
-                                            <input type="text" class="form-control" name="subjudul" value="{{ old('subjudul', $d->subjudul) }}" placeholder="Isi Sub Judul">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Deskripsi (optional)</label>
-                                            <textarea class="form-control" name="deskripsi" placeholder="Isi Deskripsi">{{ old('deskripsi', $d->deskripsi) }}</textarea>
-                                        </div>
-                                        {{-- <div class="mb-3">
-                                            <label class="form-label">Pilih Ketua Project</label>
-                                            <select class="form-control" name="kapro" id="kapro" required>
-                                                @foreach ($datakapro as $kaproin)
-                                                    <option value="{{ $kaproin->id }}" {{ $kaproin->id == $project->kapro ? 'selected' : '' }}>{{ $kaproin->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div> --}}
+
+                                      <div class="mb-3">
+                                          <label class="form-label">Judul</label>
+                                          <input type="text" class="form-control" name="judul" value="{{ old('judul', $d->judul) }}" placeholder="Isi Judul" required>
+                                          @error('judul')
+                                              <span class="text-danger">{{ $message }}</span>
+                                          @enderror
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Kode Project</label>
+                                          <input type="text" class="form-control" name="kode_project" value="{{ old('kode_project', $d->kode_project) }}" placeholder="Isi Sub Judul">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Deskripsi (optional)</label>
+                                          <textarea class="form-control" name="deskripsi" placeholder="Isi Deskripsi">{{ old('deskripsi', $d->deskripsi) }}</textarea>
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Dept Operation</label>
+                                          <input type="text" class="form-control" name="divisi" placeholder="Isi Dept Operation" value="{{ old('divisi', $d->divisi) }}">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Kode Unit Kerja</label>
+                                          <input type="text" class="form-control" name="kode_uk" placeholder="Isi Kode Unit Kerja" value="{{ old('kode_uk', $d->kode_uk) }}">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Unit Kerja</label>
+                                          <input type="text" class="form-control" name="unit_kerja" placeholder="Isi Unit Kerja" value="{{ old('unit_kerja', $d->unit_kerja) }}">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">Gaji</label>
+                                          <input type="number" class="form-control" name="gaji" placeholder="Isi Gaji" value="{{ old('gaji', $d->gaji) }}">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                        <label class="form-label">Pilih Ketua Project</label>
                                         
-                                    </div>
+                                        <select class="form-control" name="kapro" id="kapro" required>
+                                            <option value="" disabled selected>Pilih Ketua Project</option> <!-- Optional placeholder -->
+                                            @foreach ($datakapro as $kaproin)
+                                                <option value="{{ $kaproin->id }}" {{ old('kapro_id', $d->kapro_id) == $kaproin->id ? 'selected' : '' }}>
+                                                    {{ $kaproin->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                      </div>
+
+                                      <div class="mb-3">
+                                          <label class="form-label">Start Date</label>
+                                          <input type="date" class="form-control" name="start" placeholder="Pilih Tanggal Mulai" value="{{ old('start', $d->start) }}">
+                                      </div>
+                                  
+                                      <div class="mb-3">
+                                          <label class="form-label">End Date</label>
+                                          <input type="date" class="form-control" name="end" placeholder="Pilih Tanggal Selesai" value="{{ old('end', $d->end) }}">
+                                      </div>
+                                  
+                                  </div>
+                                  
                     
                                     <div class="modal-footer">
                                         <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
@@ -387,30 +427,68 @@ Kelola Project || Human Capital
         <form action="{{route('hc.kelola-project.store')}}" method="POST" enctype="multipart/form-data">
           @csrf
           <div class="modal-body">
-
-            <div class="mb-3">
-              <label class="form-label">Judul</label>
-              <input type="text" class="form-control" name="judul" placeholder="Isi Judul" required>
-              @error('judul')
-                  <span class="text-danger">{{ $message }}</span>
-              @enderror
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Kode Project</label>
+                  <input type="text" class="form-control" name="kode_project" placeholder="Isi Sub Judul" >
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Judul</label>
+                  <input type="text" class="form-control" name="judul" placeholder="Isi Judul" required>
+                  @error('judul')
+                      <span class="text-danger">{{ $message }}</span>
+                  @enderror
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Dept Operasi</label>
+                  <input type="text" class="form-control" name="divisi" placeholder="Isi Dept Operasi"></input>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Deskripsi (optional)</label>
+                  <textarea class="form-control" name="deskripsi" placeholder="Isi Deskripsi"></textarea>
+                </div>   
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Kode Unit kerja</label>
+                  <input type="text" class="form-control" name="kode_uk" placeholder="Isi Kode Unit kerja"></input>
+                </div>   
+                <div class="mb-3">
+                  <label class="form-label"> Unit kerja</label>
+                  <input type="text" class="form-control" name="unit_kerja" placeholder="Isi Unit kerja"></input>
+                </div>   
+                <div class="mb-3">
+                  <label class="form-label">Gaji Pokok</label>
+                  <input type="number" class="form-control" name="gaji" placeholder="Rp. 000000"></input>
+                </div>  
+                <div class="mb-3">
+                  <label class="form-label">Pilih Ketua Project</label>
+                  <select class="form-control" name="kapro" id="kapro" required>
+                    @foreach ($datakapro as $kaproin)
+                      <option value="{{$kaproin->id}}">{{$kaproin->name}}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Sub Judul (optional)</label>
-              <input type="text" class="form-control" name="subjudul" placeholder="Isi Sub Judul" >
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Deskripsi (optional)</label>
-              <textarea class="form-control" name="deskripsi" placeholder="Isi Deskripsi"></textarea>
-            </div>   
-            <div class="mb-3">
-              <label class="form-label">Pilih Ketua Project</label>
-              <select class="form-control" name="kapro" id="kapro" required>
-                @foreach ($datakapro as $kaproin)
-                  <option value="{{$kaproin->id}}">{{$kaproin->name}}</option>
-                @endforeach
-              </select>
-            </div>
+              
+            
+            <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Date Start</label>
+                <input type="date" class="form-control" name="start" ></input>
+              </div>   
+            </div>  
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Date End</label>
+                <input type="date" class="form-control" name="end" ></input>
+              </div>   
+            </div>  
+            </div> 
+            
             
             
           </div>

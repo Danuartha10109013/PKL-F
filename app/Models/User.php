@@ -26,6 +26,7 @@ class User extends Authenticatable
         'active',
         'role',
         'no_pegawai',
+        'posisi',
     ];
 
     /**

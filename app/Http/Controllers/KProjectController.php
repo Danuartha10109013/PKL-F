@@ -49,22 +49,33 @@ class KProjectController extends Controller
         // Validate the incoming request data
         $request->validate([
             'judul' => 'required|string|max:255',
-            'subjudul' => 'nullable|string|max:255',
+            'kode_project' => 'required|string|unique:project',
             'deskripsi' => 'nullable|string',
-            'kapro' => 'required|exists:users,id' // assuming 'kapros' is the name of the project leader table
+            'kode_uk' => 'required|string',
+            'divisi' => 'required|string',
+            'unit_kerja' => 'required|string',
+            'gaji' => 'required|integer',
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'kapro' => 'required',
         ]);
 
         // Create a new user (or any related model) using the validated data
         $project = new ProjectM();
         $project->judul = $request->input('judul');
-        $project->subjudul = $request->input('subjudul', null);
+        $project->kode_project = $request->input('kode_project', null);
         $project->deskripsi = $request->input('deskripsi', null);
+        $project->divisi = $request->input('divisi');
+        $project->kode_uk = $request->input('kode_uk');
+        $project->unit_kerja = $request->input('unit_kerja');
+        $project->gaji = $request->input('gaji');
+        $project->start = $request->input('start');
+        $project->end = $request->input('end');
         $project->status = 0; //inactive
+        $project->kapro_id = $request->input('kapro'); //inactive
         $project->save();
 
-        $kapro = User::find($request->kapro);
-        $kapro->project_id = $project->id; // Assuming kapro is a foreign key
-        $kapro->save();
+        
 
         // Optionally, you can return a response or redirect to a success page
         return redirect()->route('hc.kelola-project')->with('success', 'Project created successfully!');
@@ -94,9 +105,15 @@ public function update(Request $request, $id)
     // Validate the incoming request data
     $request->validate([
         'judul' => 'required|string|max:255',
-        'subjudul' => 'nullable|string|max:255',
+        'kode_project' => 'required',
         'deskripsi' => 'nullable|string',
-        'kapro' => 'nullable|exists:users,id', // Ensure the selected ketua project exists in the users table
+        'kode_uk' => 'required|string',
+        'divisi' => 'required|string',
+        'unit_kerja' => 'required|string',
+        'gaji' => 'required|integer',
+        'start' => 'required|date',
+        'end' => 'required|date',
+        'kapro' => 'required', // Ensure the selected ketua project exists in the users table
     ]);
 
     // Find the project by ID
@@ -104,8 +121,15 @@ public function update(Request $request, $id)
 
     // Update the project with the validated data
     $project->judul = $request->judul;
-    $project->subjudul = $request->subjudul;
+    $project->kode_project = $request->kode_project;
     $project->deskripsi = $request->deskripsi;
+    $project->kode_uk = $request->kode_uk;
+    $project->unit_kerja = $request->unit_kerja;
+    $project->divisi = $request->divisi;
+    $project->start = $request->start;
+    $project->end = $request->end;
+    $project->gaji = $request->gaji;
+    $project->kapro_id = $request->kapro;
     
     // Save the changes to the database
     $project->save();

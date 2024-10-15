@@ -168,7 +168,14 @@ Kelola User || Human Capital
                               <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" placeholder="Your email name" required>
-                                @error('password')
+                                @error('email')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label">Posisi</label>
+                                <input type="text" class="form-control" name="posisi" placeholder="Your posisi name" required>
+                                @error('posisi')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                               </div>
@@ -320,6 +327,10 @@ Kelola User || Human Capital
                               <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" value="{{ $d->email }}" placeholder="Your email" required>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label">posisi</label>
+                                <input type="text" class="form-control" name="posisi" value="{{ $d->posisi }}" placeholder="Your posisi" required>
                               </div>
 
                               <!-- New Password Field -->
@@ -489,7 +500,14 @@ Kelola User || Human Capital
                               <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" placeholder="Your email name" required>
-                                @error('password')
+                                @error('email')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label">Posisi</label>
+                                <input type="text" class="form-control" name="posisi" placeholder="Your posisi name" required>
+                                @error('posisi')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                               </div>
@@ -641,6 +659,10 @@ Kelola User || Human Capital
                               <div class="mb-3">
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" value="{{ $d->email }}" placeholder="Your email" required>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label">Posisi</label>
+                                <input type="text" class="form-control" name="posisi" value="{{ $d->posisi }}" placeholder="Your posisi" required>
                               </div>
 
                               <!-- New Password Field -->

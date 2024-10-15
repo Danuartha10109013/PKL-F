@@ -11,9 +11,15 @@ class ProjectM extends Model
     protected $table = 'project';
     protected $fillable = [
         'judul',
-        'subjudul',
+        'kode_project',
         'deskripsi',
         'status',
+        'start',
+        'end',
+        'kode_uk',
+        'divisi',
+        'unit_kerja',
+        'gaji',
         'start',
         'end',
     ] ;
