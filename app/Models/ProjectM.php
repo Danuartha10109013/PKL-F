@@ -22,5 +22,6 @@ class ProjectM extends Model
         'gaji',
         'start',
         'end',
+        'pegawai_id',
     ] ;
 }

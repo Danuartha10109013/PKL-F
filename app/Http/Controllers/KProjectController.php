@@ -16,8 +16,8 @@ class KProjectController extends Controller
         // Modify the query to include search functionality
         $hasil = ProjectM::when($search, function ($query, $search) {
             return $query->where('judul', 'like', '%' . $search . '%')  
-                        ->orWhere('subjudul', 'like', '%' . $search . '%')  
-                        ->orWhere('deskripsi', 'like', '%' . $search . '%'); 
+                        ->orWhere('kode_project', 'like', '%' . $search . '%')  
+                        ->orWhere('divisi', 'like', '%' . $search . '%'); 
         })->paginate(10);
 
 

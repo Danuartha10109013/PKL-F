@@ -248,8 +248,8 @@
       </li> --}}
       
 
-      <li class="nav-item {{ Route::currentRouteName() == 'kapro.dashboard' ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('kapro.dashboard')}}" >
+      <li class="nav-item {{ Route::currentRouteName() == 'kapro.projeect' ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('kapro.project')}}" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
             <i class="ti ti-user"></i>
           </span>
@@ -259,8 +259,8 @@
         </a>
       </li>
       
-       <li class="nav-item {{ Route::currentRouteName() == 'kapro.kelola-user' ? 'active' : '' }}">
-        <a class="nav-link" href="{{route('kapro.kelola-user')}}" >
+       {{-- <li class="nav-item {{ Route::currentRouteName() == 'kapro.project' ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('kapro.project')}}" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
             <i class="ti ti-book"></i>
           </span>
@@ -268,7 +268,7 @@
            Kelola Anggota Project 
           </span>
         </a>
-      </li>
+      </li> --}}
 
 {{--
       <li class="nav-item">

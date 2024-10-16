@@ -18,7 +18,7 @@ Kelola Project || Human Capital
       </div>
       <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
         <!-- Search Form -->
-        <form action="{{ route('hc.kelola-user') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
+        <form action="{{ route('hc.kelola-project') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
             <input type="text" id="searchInput" name="search" class="form-control w-100" 
                    placeholder="Search project..." value="{{ request()->query('search') }}">
             <!-- Clear 'X' Button outside the input -->
@@ -45,7 +45,7 @@ Kelola Project || Human Capital
     <script>
       document.getElementById('clearSearch').addEventListener('click', function() {
           document.getElementById('searchInput').value = ''; // Clear the input value
-          window.location.href = "{{ route('hc.kelola-user') }}"; // Redirect to the base route
+          window.location.href = "{{ route('hc.kelola-project') }}"; // Redirect to the base route
       });
   </script>
    

@@ -7,6 +7,7 @@ use App\Http\Controllers\KProjectController;
 use App\Http\Controllers\KUserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AutoLogout;
 use Illuminate\Support\Facades\Route;
 
@@ -83,6 +84,13 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/nonactive/{id}',[KUserController::class,'nonactive'])->name('kelola-user.nonactive');
             Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
             Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
+        });
+        Route::prefix('project')->group(function () {
+            Route::get('/',[ProjectController::class,'index'])->name('project');
+            Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('project.detail');
+            Route::post('/addUser',[ProjectController::class,'addUser'])->name('project.addUser');
+            Route::post('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
+            Route::post('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
         });
         
     });
