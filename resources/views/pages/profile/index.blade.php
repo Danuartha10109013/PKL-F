@@ -164,6 +164,26 @@ Dashboard || Pegawai
                   </div>
                 </div>
 
+                <h3 class="card-title mt-4">Assurance Details</h3>
+                <div class="row g-3">
+                  <div class="col-md">
+                    <div class="form-label">No BPJS</div>
+                    <input type="text" class="form-control" name="no_bpjs" value="{{$data->no_bpjs}}">
+                  </div>
+                  <div class="col-md">
+                    <div class="form-label">No BPJSTK</div>
+                    <input type="text" class="form-control" name="no_bpjstk" value="{{$data->no_bpjstk}}">
+                  </div>
+                  <div class="col-md">
+                    <div class="form-label">Lokasi BPJS</div>
+                    <input type="text" class="form-control" name="lokasi_bpjs" value="{{$data->lokasi_bpjs}}">
+                  </div>
+                  <div class="col-md">
+                    <div class="form-label">Terdaftar BPJSTK</div>
+                    <input type="text" class="form-control" name="terdaftar_bpjstk" value="{{$data->terdaftar_bpjstk}}">
+                  </div>
+                </div>
+
                 <h3 class="card-title mt-4">Other Details</h3>
                 <div class="row g-3">
                   <div class="col-md">

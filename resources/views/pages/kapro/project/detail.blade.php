@@ -58,7 +58,7 @@ Detail Project || {{$data->judul}}
             </div>
             <div class="row">
               <div class="col-md-6">
-                <p><strong>Gaji:</strong> Rp. {{ number_format($data->gaji, 0, ',', '.') }},00</p>
+                <p><strong>Gaji:</strong> Rp. {{ number_format($data->gaji, 0, ',', '.') }} ,00</p>
               </div>
               <div class="col-md-6">
                 <p><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($data->start)->format('d M Y') }}</p>
@@ -68,7 +68,7 @@ Detail Project || {{$data->judul}}
 
             <!-- Users List -->
             <div id="users-list" class="mt-4">
-              <h4>List of Users</h4>
+              <h4>Pegawai yang terlibat</h4>
               <table class="table table-vcenter">
                 <thead>
                   <tr>
@@ -125,6 +125,68 @@ Detail Project || {{$data->judul}}
                           @endif
                         </td>
                         <td class="text-nowrap">
+
+                          @php
+                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->count();
+                          @endphp
+                   
+                        
+                   @if ($ids == 1)
+                      Sudah DIniliai
+                      @else
+                      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nilaiModal{{ $d->id }}">
+                        Beri Nilai
+                      </button>
+                          @endif
+
+                            <!-- Modal for scoring -->
+                            <div class="modal fade" id="nilaiModal{{ $d->id }}" tabindex="-1" aria-labelledby="nilaiModalLabel{{ $d->id }}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title" id="nilaiModalLabel{{ $d->id }}">Beri Nilai untuk {{ $d->name }}</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <form action="{{route('kapro.project.nilaiUser',$d->id)}}" method="POST">
+                                              @csrf
+                                              <!-- Hasil Kerja (35%) -->
+                                              <div class="mb-3">
+                                                  <label for="hasilKerja{{ $d->id }}" class="form-label">Hasil Kerja (35%)</label>
+                                                  <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja{{ $d->id }}" max="100" min="0" required>
+                                              </div>
+
+                                              <!-- Kualitas Kerja (40%) -->
+                                              <div class="mb-3">
+                                                  <label for="kualitasKerja{{ $d->id }}" class="form-label">Kualitas Kerja (40%)</label>
+                                                  <input type="number" name="kualitas_kerja" class="form-control" id="kualitasKerja{{ $d->id }}" max="100" min="0" required>
+                                              </div>
+
+                                              <!-- Kepatuhan SOP (25%) -->
+                                              <div class="mb-3">
+                                                  <label for="kepatuhanSOP{{ $d->id }}" class="form-label">Kepatuhan SOP (25%)</label>
+                                                  <input type="number" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP{{ $d->id }}" max="100" min="0" required>
+                                              </div>
+
+                                              <div class="mb-3">
+                                                  <label for="kepatuhanSOP{{ $d->id }}" class="form-label">Keterangan</label>
+                                                  <input type="text" name="keterangan" class="form-control" id="kepatuhanSOP{{ $d->id }}" max="100" min="0" >
+                                              </div>
+
+                                              <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                  <button type="submit" class="btn btn-primary">Submit</button>
+                                              </div>
+
+                                              <input type="text" name="project_id" value="{{$data->id}}" hidden>
+                                              <input type="text" name="user_id" value="{{$d->id}}" hidden>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+
+                          
                             <!-- Delete button triggers modal -->
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
                                 Delete
@@ -143,7 +205,7 @@ Detail Project || {{$data->judul}}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form action="{{ route('hc.kelola-user.delete', $d->id) }}" method="POST">
+                                            <form action="{{ route('kapro.project.delete.user', $d->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Yes, Delete</button>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KontrakM;
+use App\Models\PenilaianM;
 use App\Models\ProjectM;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,8 +20,19 @@ class ProjectController extends Controller
     public function detail($id){
         $users = User::where('role',1)->get();
         $data = ProjectM::find($id);
+        // Assuming $data->user_id contains the JSON array like '["2","7","14"]'
+        $user_ids = json_decode($data->pegawai_id, true); // Decode the JSON array into PHP array
+
+        // Check if the user_ids is a valid array before querying
+        if (is_array($user_ids) && count($user_ids) > 0) {
+            // Use whereIn to get records matching the user_ids
+            $cc = PenilaianM::whereIn('id', $user_ids)->get();
+        } else {
+            $cc = collect(); // If user_ids is empty, return an empty collection
+        }
+        // dd($cc);
         // $user_terlibat = User::where('id',$same)->get()
-        return view('pages.kapro.project.detail',compact('data','users'));
+        return view('pages.kapro.project.detail',compact('data','users','cc'));
     }
 
     public function addUser(Request $request)
@@ -74,5 +86,66 @@ class ProjectController extends Controller
         $kontrak->akhir_kontrak = $data->end;
         $kontrak->periode = $periode;
     }
+
+    // UserController.php
+    public function delete_user($id)
+    {
+        // Find the user by ID
+        $user = \App\Models\User::findOrFail($id);
+
+        $projects = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$id)->get();
+
+        foreach ($projects as $project) {
+            $pegawaiIds = json_decode($project->pegawai_id, true) ?? [];
+
+            if (is_array($pegawaiIds) && in_array((string)$id, $pegawaiIds)) {
+                $pegawaiIds = array_filter($pegawaiIds, fn($value) => $value != (string)$id);
+
+                $project->pegawai_id = json_encode(array_values($pegawaiIds));
+                $project->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'User deleted successfully, and they have been removed from all related projects.');
+    }
+
+    public function nilaiUser(Request $request, $id)
+    {
+        // Validate the incoming scores
+        $request->validate([
+            'project_id' => 'required|string|max:255',
+            'hasil_kerja' => 'required|numeric|min:0|max:100',
+            'kualitas_kerja' => 'required|numeric|min:0|max:100',
+            'kepatuhan_sop' => 'required|numeric|min:0|max:100',
+        ]);
+    
+        // Retrieve the user by ID
+        $user = User::findOrFail($id);
+    
+        // Calculate the weighted score
+        $hasilKerjaScore = $request->input('hasil_kerja') * 0.35; // 35% weight
+        $kualitasKerjaScore = $request->input('kualitas_kerja') * 0.40; // 40% weight
+        $kepatuhanSOPScore = $request->input('kepatuhan_sop') * 0.25; // 25% weight
+    
+        // Total weighted score
+        $totalScore = $hasilKerjaScore + $kualitasKerjaScore + $kepatuhanSOPScore;
+    
+        // Save the score or update it in the database (you can store it in a new model or table)
+        // Assuming there's a 'user_scores' table with a 'score' column
+        $data = new PenilaianM();
+        $data->user_id = $request->input('user_id');
+        $data->project_id = $request->input('project_id');
+        $data->hasil_kerja = $request->input('hasil_kerja');
+        $data->kualitas_kerja = $request->input('kualitas_kerja');
+        $data->kepatuhan_sop = $request->input('kepatuhan_sop');
+        $data->total = $totalScore;
+        $data->keterangan = $request->input('keterangan');
+        $data->save();
+    
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Nilai berhasil diberikan untuk ' . $user->name);
+    }
+    
+
     
 }

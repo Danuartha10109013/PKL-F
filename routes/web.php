@@ -89,8 +89,10 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[ProjectController::class,'index'])->name('project');
             Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('project.detail');
             Route::post('/addUser',[ProjectController::class,'addUser'])->name('project.addUser');
-            Route::post('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
-            Route::post('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
+            Route::get('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
+            Route::get('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
+            Route::delete('/delete/{id}',[ProjectController::class,'delete_user'])->name('project.delete.user');
+            Route::post('/nilaiUser/{id}',[ProjectController::class,'nilaiUser'])->name('project.nilaiUser');
         });
         
     });
