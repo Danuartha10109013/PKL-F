@@ -22,17 +22,84 @@ Detail Project || {{$data->judul}}
 </div>
 
 <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
-@if ($data->status == 0)
-<a href="{{route('kapro.project.activate',$data->id)}}" class="btn btn-primary" style="margin-right: 15px">Activate</a>
+  @if ($data->status == 0)
+  <a href="#" class="btn btn-primary" style="margin-right: 15px" data-toggle="modal" data-target="#activateModal">Activate</a>
 @elseif ($data->status == 1)
-<a href="{{route('kapro.project.complete',$data->id)}}" class="btn btn-warning " style="margin-right: 15px">On Progres</a>
+  <a href="#" class="btn btn-warning" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">On Progress</a>
 @elseif ($data->status == 2)
-<a  class="btn btn-warning" style="margin-right: 15px" >Complete</a>
+  <a class="btn btn-success" style="margin-right: 15px" data-toggle="modal" data-target="#completeModal">Complete</a>
 @endif
+
+<!-- Activate Modal -->
+<div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="activateModalLabel">Confirm Activation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to activate this project?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a href="{{route('kapro.project.activate', $data->id)}}" class="btn btn-primary">Yes, Activate</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- On Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="progressModalLabel">Confirm Progress</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you want to complete this project?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a href="{{route('kapro.project.complete', $data->id)}}" class="btn btn-success">Yes, Complete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Complete Modal -->
+<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="completeModalLabel">Project Complete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This project is already complete.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <!-- Button to trigger modal -->
+  @if ($data->status == 0)
   <button type="button" class="btn btn-secondary" style="margin-right: 20px" data-bs-toggle="modal" data-bs-target="#addUserModal">
     Add More User
   </button>
+    @else
+  @endif
 </div>
 
 <!-- Page body -->
@@ -78,6 +145,10 @@ Detail Project || {{$data->judul}}
                     <th>Username</th>
                     <th>Role</th>
                     <th>Action</th>
+                    @if ($data->status == 2)
+                    <th>Total Nilai</th>
+                    @else
+                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -127,16 +198,20 @@ Detail Project || {{$data->judul}}
                         <td class="text-nowrap">
 
                           @php
-                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->count();
+                          $project = $data->id;
+                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->count();
+                          $total = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->value('total');
+                          // dd($project);
                           @endphp
                    
                         
-                   @if ($ids == 1)
+                   @if ($ids == 1 && $data->id == $project)
                       Sudah DIniliai
-                      @else
+                      @elseif ($data->status == 2)
                       <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nilaiModal{{ $d->id }}">
                         Beri Nilai
                       </button>
+                      @else
                           @endif
 
                             <!-- Modal for scoring -->
@@ -186,11 +261,15 @@ Detail Project || {{$data->judul}}
                               </div>
                             </div>
 
-                          
+                          @if ($data->status == 0)
+                            
                             <!-- Delete button triggers modal -->
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
                                 Delete
                             </button>
+
+                            @else
+                            @endif
                 
                             <!-- Modal -->
                             <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
@@ -215,6 +294,16 @@ Detail Project || {{$data->judul}}
                                 </div>
                             </div>
                         </td>
+                        @if ($data->status == 2)
+                        <td>
+                          @if ($ids == 1 && $data->id == $project)
+                          {{$total}}
+                          @else
+                            Belum diberi nilai
+                          @endif
+                        </td>
+                        @else
+                        @endif
                       </tr>
                     @endforeach
                   @endif
@@ -258,6 +347,11 @@ Detail Project || {{$data->judul}}
     </div>
   </div>
 </div>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery dan Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Include Bootstrap JS for Modal functionality -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

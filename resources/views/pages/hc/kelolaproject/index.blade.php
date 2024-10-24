@@ -88,6 +88,7 @@ Kelola Project || Human Capital
                                     <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }} ,00</td>
                                     <td class="text-nowrap">
                                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
+                                        <a href="{{route('hc.project.detail',$d->id)}}" class="btn btn-success">Detail</a>
 
                                         <!-- Delete button triggers modal -->
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
@@ -135,7 +136,7 @@ Kelola Project || Human Capital
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $d)
+                            @foreach ($hasil as $d)
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td class="w-1">{{$d->judul}}</td>
@@ -153,8 +154,35 @@ Kelola Project || Human Capital
                                     <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }},00</td>
                                     <td class="text-nowrap">
                                         <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
-                                        <a href="{{route('kapro.project.detail',$d->id)}}" class="btn btn-success">Detail</a>
-                                    </td>
+                                        <a href="{{route('hc.kelola-project.detail',$d->id)}}" class="btn btn-success">Detail</a>
+                                        <!-- Delete button triggers modal -->
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
+                                          Delete
+                                      </button>
+                          
+                                      <!-- Modal -->
+                                      <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
+                                          <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <h5 class="modal-title" id="deleteModalLabel{{ $d->id }}">Confirm Delete</h5>
+                                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      Are you sure you want to delete {{ $d->name }}?
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                      <form action="{{ route('hc.kelola-project.delete', $d->id) }}" method="POST">
+                                                          @csrf
+                                                          @method('DELETE')
+                                                          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                      </form>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      </td>
                                 </tr>
                             @endforeach
                         </tbody>

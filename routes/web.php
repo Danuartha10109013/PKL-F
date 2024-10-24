@@ -53,6 +53,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[KProjectController::class,'index'])->name('kelola-project');
             Route::get('/add',[KProjectController::class,'add'])->name('kelola-project.add');
             Route::post('/store',[KProjectController::class,'store'])->name('kelola-project.store');
+            Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('kelola-project.detail');
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
 

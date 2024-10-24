@@ -67,24 +67,58 @@ class ProjectController extends Controller
         return redirect()->back()->with('error', 'User is already assigned to this project.');
     }
 
-    public function activate($id){
+    public function activate($id)
+    {
+        // Find the project by its ID
         $data = ProjectM::find($id);
-
+    
+        // Update the project status to 'active'
         $data->status = 1;
         $data->save();
-
-        $periode = $data->pegawai_id;
-        $list = $data->pegawai_id;
-
-        foreach ($list as $l){
-            $user = User::where('id',$l)->get();
+    
+        // Decode pegawai_id since it's a JSON string (e.g., ["2", "7", "14"])
+        $pegawaiList = json_decode($data->pegawai_id, true); // true to convert to an associative array
+        // dd($pegawaiList);
+        // Ensure we have a valid array before looping
+        if (is_array($pegawaiList) && !empty($pegawaiList)) {
+            // Loop through each employee in the list
+            foreach ($pegawaiList as $pegawaiId) {
+                // Find the user by their ID
+                $user = User::find($pegawaiId); // Use 'find' since you only need one record
+            
+                if ($user) {
+                    // Try to find an existing contract for the user
+                    $periode = KontrakM::where('user_id',$pegawaiId)->count();
+                    // If no existing contract, start with periode = 1
+                    // Otherwise, increment the existing contract's periode
+                    // $periode = $kontrakin ? $kontrakin->periode + 1 : 1;
+                    // dd($pegawaiId);
+            
+                    // Create a new contract for the user
+                    $kontrak = new KontrakM();
+                    $kontrak->user_id = $pegawaiId; // Assign the employee ID
+                    $kontrak->awal_kontrak = $data->start;
+                    $kontrak->akhir_kontrak = $data->end;
+                    $kontrak->periode = $periode + 1; // Set the calculated periode
+                    $kontrak->save(); // Save the contract to the database
+                }
+            }
+            
+        } else {
+            // Handle the case where pegawai_id is null, invalid, or empty
+            return response()->json(['error' => 'Pegawai list is empty or invalid'], 400);
         }
+        return redirect()->back()->with('success','Project telah dimulai, Kontrak terbuat');
+    }
+    
 
-        $kontrak = new KontrakM();
-        $kontrak->user_id = $list;
-        $kontrak->awal_kontrak = $data->start;
-        $kontrak->akhir_kontrak = $data->end;
-        $kontrak->periode = $periode;
+    public function complete($id){
+        $data = ProjectM::find($id);
+        // dd($data);
+        $data->status = 2;
+        $data->save();
+        return redirect()->back()->with('success','Project telah selesai');
+
     }
 
     // UserController.php

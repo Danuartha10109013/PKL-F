@@ -26,12 +26,16 @@ class KProjectController extends Controller
         $same = ProjectM::value('id');
         $Kapro = User::where('project_id', $same)->value('name');
 
+        if($hasil){
+
         if(Auth::user()->role == 2) {
             $data = ProjectM::where('project_id', $hasil)->paginate(10);
             // $data = User::paginate(10);
         }else{
             $data = ProjectM::paginate(10);
         }
+        }
+
         $count = ProjectM::all()->count();
         $countpegawai = ProjectM::where('status',0)->count();
         $counthc = ProjectM::where('status',1)->count();
