@@ -3,7 +3,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-      <a href=".">
+      <a target="_blank" href="https://www.wika.co.id/">
         <img src="{{asset('logo_wika.png')}}" width="110" height="32" alt="Tabler" class="navbar-brand-image"> PT. Wijaya Karya
       </a>
     </h1>

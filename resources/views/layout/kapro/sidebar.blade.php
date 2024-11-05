@@ -248,7 +248,7 @@
       </li> --}}
       
 
-      <li class="nav-item {{ Route::currentRouteName() == 'kapro.projeect' ? 'active' : '' }}">
+      <li class="nav-item {{ Route::currentRouteName() == 'kapro.project' ? 'active' : '' }}">
         <a class="nav-link" href="{{route('kapro.project')}}" >
           <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
             <i class="ti ti-user"></i>

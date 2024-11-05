@@ -30,9 +30,19 @@ class ProjectController extends Controller
         } else {
             $cc = collect(); // If user_ids is empty, return an empty collection
         }
+
+        $lastUser = User::orderBy('no_pegawai', 'desc')->first();
+
+        if ($lastUser && preg_match('/^EMP(\d+)$/', $lastUser->no_pegawai, $matches)) {
+            // Increment the number
+            $newNoPegawai = 'EMP' . str_pad($matches[1] + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            // If no users exist, start with EMP001
+            $newNoPegawai = 'EMP001';
+        }
         // dd($cc);
         // $user_terlibat = User::where('id',$same)->get()
-        return view('pages.kapro.project.detail',compact('data','users','cc'));
+        return view('pages.kapro.project.detail',compact('data','users','cc','newNoPegawai'));
     }
 
     public function addUser(Request $request)
@@ -99,7 +109,8 @@ class ProjectController extends Controller
                     $kontrak->user_id = $pegawaiId; // Assign the employee ID
                     $kontrak->awal_kontrak = $data->start;
                     $kontrak->akhir_kontrak = $data->end;
-                    $kontrak->periode = $periode + 1; // Set the calculated periode
+                    $kontrak->periode = $periode + 1;
+                    $kontrak->project_id = $id;
                     $kontrak->save(); // Save the contract to the database
                 }
             }

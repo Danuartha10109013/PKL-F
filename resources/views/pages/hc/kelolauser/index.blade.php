@@ -527,7 +527,7 @@ Kelola User || Human Capital
                             </div>
                               <label class="form-label">User type</label>
                               <div class="form-selectgroup-boxes row mb-3">
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                   <label class="form-selectgroup-item mb-2">
                                     <input type="radio" name="role" value="0" class="form-selectgroup-input" required >
                                     <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -552,7 +552,7 @@ Kelola User || Human Capital
                                   </label>
                                 </div>
 
-                                <div class="col-lg-4">
+                                {{-- <div class="col-lg-4">
                                   <label class="form-selectgroup-item">
                                     <input type="radio" name="role" value="4" class="form-selectgroup-input" required>
                                     <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -564,9 +564,9 @@ Kelola User || Human Capital
                                       </span>
                                     </span>
                                   </label>
-                                </div>
+                                </div> --}}
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-6x`">
                                   <label class="form-selectgroup-item mb-2">
                                     <input type="radio" name="role" value="2" class="form-selectgroup-input" required>
                                     <span class="form-selectgroup-label d-flex align-items-center p-3">

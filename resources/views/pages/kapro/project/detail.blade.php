@@ -20,7 +20,8 @@ Detail Project || {{$data->judul}}
     </div>
   </div>
 </div>
-
+@if (Auth::user()->role == 2)
+  
 <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
   @if ($data->status == 0)
   <a href="#" class="btn btn-primary" style="margin-right: 15px" data-toggle="modal" data-target="#activateModal">Activate</a>
@@ -101,6 +102,8 @@ Detail Project || {{$data->judul}}
     @else
   @endif
 </div>
+@else
+@endif
 
 <!-- Page body -->
 <div class="page-body">
@@ -147,6 +150,7 @@ Detail Project || {{$data->judul}}
                     <th>Action</th>
                     @if ($data->status == 2)
                     <th>Total Nilai</th>
+                    <th>Laporan</th>
                     @else
                     @endif
                   </tr>
@@ -260,16 +264,20 @@ Detail Project || {{$data->judul}}
                                   </div>
                               </div>
                             </div>
+                            @if (Auth::user()->role==2)
+                              
+                              @if ($data->status == 0)
+                                
+                              <!-- Delete button triggers modal -->
+                              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
+                                  Delete
+                              </button>
 
-                          @if ($data->status == 0)
-                            
-                            <!-- Delete button triggers modal -->
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
-                                Delete
-                            </button>
-
+                              @else
+                              @endif
                             @else
                             @endif
+
                 
                             <!-- Modal -->
                             <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
@@ -302,6 +310,9 @@ Detail Project || {{$data->judul}}
                             Belum diberi nilai
                           @endif
                         </td>
+                        <td>
+                          <a href="" class="btn btn-primary">Lihat Laporan</a>
+                        </td>
                         @else
                         @endif
                       </tr>
@@ -317,7 +328,7 @@ Detail Project || {{$data->judul}}
   </div>
 </div>
 
-<!-- Modal -->
+<!-- First Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -338,6 +349,11 @@ Detail Project || {{$data->judul}}
               @endforeach
             </select>
           </div>
+          <div class="mb-3">
+            <a href="#" class="btn btn-primary" onclick="openSecondModal(event)">
+              Tambahkan User Baru
+            </a>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Add User</button>
@@ -347,6 +363,102 @@ Detail Project || {{$data->judul}}
     </div>
   </div>
 </div>
+
+<!-- JavaScript to Handle Modal Transitions -->
+<script>
+  function openSecondModal(event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    const firstModal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+    firstModal.hide(); // Close the first modal
+
+    // Wait for the first modal to fully close before showing the second
+    firstModal._element.addEventListener('hidden.bs.modal', () => {
+      const secondModal = new bootstrap.Modal(document.getElementById('modal-report'));
+      secondModal.show();
+    }, { once: true });
+  }
+</script>
+
+{{-- New User Modal --}}
+<div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{route('kapro.kelola-user.store')}}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">No Pegawai</label>
+            <input type="text" class="form-control" name="no_pegawai" value="{{$newNoPegawai}}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Your name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" placeholder="Your Username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Your email name" required>
+            @error('email')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Posisi</label>
+            <input type="text" class="form-control" name="posisi" placeholder="Your posisi name" required>
+            @error('posisi')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Your password" required>
+            <span>At least 6 characters</span>
+            @error('password')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm your password" required>
+          </div>
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="mb-3">
+                <label class="form-label">Avatar</label>
+                <input type="file" class="form-control" name="avatar">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                  <option value="" selected disabled>-- Pilih Status User --</option>
+                  <option value="1">Active</option>
+                  <option value="0">Non Active</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+          <button type="submit" class="btn btn-primary ms-auto">
+            Create New User
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- jQuery dan Bootstrap JS -->

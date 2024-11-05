@@ -58,7 +58,6 @@ class KUserController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|integer',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Validating image file
             'status' => 'required|boolean',
             'posisi' => 'required',
@@ -79,14 +78,21 @@ class KUserController extends Controller
         $user->email = $request->email;
         $user->posisi = $request->posisi;
         $user->password = Hash::make($request->password);
-        $user->role = $request->role;
+        if (Auth::user()->role == 0){
+            $user->role = $request->role;
+        }else{
+            $user->role = 1;
+        }
         $user->active = $request->status;
         $user->posisi = $request->posisi;
         $user->profile = $avatarPath; // Save the avatar path if uploaded
         $user->email_verified_at = now();
         $user->save();
-
-        return redirect()->back()->with('success', 'User created successfully');
+        if (Auth::user()->role == 0){
+            return redirect()->back()->with('success', 'User created successfully');
+        }else{
+            return redirect()->back()->with('success', 'User created successfully. Please Chose User Again');
+        }
     }
 
     public function active($id){

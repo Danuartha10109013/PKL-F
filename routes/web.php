@@ -6,6 +6,7 @@ use App\Http\Controllers\KKontrakController;
 use App\Http\Controllers\KProjectController;
 use App\Http\Controllers\KUserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AutoLogout;
@@ -28,7 +29,15 @@ Route::middleware([AutoLogout::class])->group(function () {
 
     Route::group(['prefix' => 'pegawai', 'middleware' => ['pegawai'], 'as' => 'pegawai.'], function () {
         //Dashboard
-        Route::get('/', [DashbardController::class, 'pegawai'])->name('dashboard'); //not same
+        Route::get('/', [DashbardController::class, 'pegawai'])->name('dashboard'); 
+        Route::prefix('project')->group(function () {
+            Route::get('/', [PegawaiController::class, 'project'])->name('project'); 
+        
+        });
+        Route::prefix('kontrak')->group(function () {
+            Route::get('/', [PegawaiController::class, 'kontrak'])->name('kontrak'); 
+        
+        });
 
     });
 

@@ -15,6 +15,7 @@ class KontrakM extends Model
     // Specify the fillable fields for mass assignment
     protected $fillable = [
         'user_id',
+        'project_id',
         'awal_kontrak',
         'akhir_kontrak',
         'periode',

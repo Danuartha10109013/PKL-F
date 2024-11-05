@@ -33,15 +33,67 @@ Kelola Kontrak || Human Capital
         </form>
     
         <!-- Tambahkan Pegawai Baru Button -->
-        <a href="{{route('hc.kelola-user.add')}}" class="btn btn-primary d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 5l0 14" />
-                <path d="M5 12l14 0" />
-            </svg>
-            Tambahkan Project Baru
+        <a href="{{route('hc.kelola-user.add')}}" class="btn btn-success d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
+            
+            Get All Kontrak
         </a>
     </div>
-   
+   <div class="card">
+    <div class="container mt-3">
+      <table class="table table-vcenter">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Pegawai</th>
+                <th>Project Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Periode</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tbody>
+            @foreach ($data as $d)
+            <tr>
+              <td>{{$loop->iteration}}</td>
+              <td>
+                @php
+                  $name = \App\Models\User::where('id',$d->user_id)->value('name');
+                @endphp
+                {{$name}}
+              </td>
+              <td>
+                @php
+                  $pn = \App\Models\ProjectM::where('id',$d->project_id)->value('judul');
+                @endphp
+                {{$pn == null ? 'Project Unavailable' : $pn}}
+              </td>
+              <td>{{$d->awal_kontrak}}</td>
+              <td>{{$d->akhir_kontrak}}</td>
+              <td>{{$d->periode}}</td>
+              <td>
+                <a href="" class="btn btn-primary"><i class=""></i>Show</a>
+                <a href="" class="btn btn-warning">Print</a>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      {{ $data->links() }}
+
+    </div>
+  </div>
+  <style>
+              
+    .pagination p{
+      display: none;
+    }
+    .pagination .flex span:nth-child(1){
+      display: none;
+    }
+
+  </style>
 
 @endsection

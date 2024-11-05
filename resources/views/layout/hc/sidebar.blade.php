@@ -72,7 +72,7 @@
     </li>
 
     <!-- Menu Kelola Gaji -->
-    <li class="nav-item {{ Route::currentRouteName() == 'hc.kelola-gaji' ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Route::currentRouteName() == 'hc.kelola-gaji' ? 'active' : '' }}">
       <a class="nav-link" href="{{route('hc.kelola-gaji')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
           <i class="ti ti-cash"></i>
@@ -81,7 +81,7 @@
          Kelola Gaji
         </span>
       </a>
-    </li>
+    </li> --}}
     
   </ul>
   <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
