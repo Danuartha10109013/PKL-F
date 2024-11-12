@@ -566,7 +566,7 @@ Kelola User || Human Capital
                                   </label>
                                 </div> --}}
 
-                                <div class="col-lg-6x`">
+                                <div class="col-lg-6">
                                   <label class="form-selectgroup-item mb-2">
                                     <input type="radio" name="role" value="2" class="form-selectgroup-input" required>
                                     <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -611,6 +611,20 @@ Kelola User || Human Capital
                                       <option name="status" value="1">Active</option>
                                       <option name="status" value="0">Non Active</option>
                                     </select>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">Awal Kontrak</label>
+                                    <input type="date" class="form-control" name="awal" value="{{ now()->format('Y-m-d') }}" required>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="mb-3">
+                                    <label class="form-label">Akhir Kontrak</label>
+                                    <input type="date" class="form-control" name="akhir" placeholder="Your name" required>
                                   </div>
                                 </div>
                               </div>

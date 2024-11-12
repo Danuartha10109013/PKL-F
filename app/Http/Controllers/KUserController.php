@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KontrakM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,6 +89,16 @@ class KUserController extends Controller
         $user->profile = $avatarPath; // Save the avatar path if uploaded
         $user->email_verified_at = now();
         $user->save();
+
+        $periode = KontrakM::where('user_id',$user->id)->count();
+        $kontrak = new KontrakM();
+        $kontrak->user_id = $user->id; 
+        $kontrak->awal_kontrak = $request->awal;
+        $kontrak->akhir_kontrak = $request->akhir;
+        $kontrak->periode = $periode + 1;
+        $kontrak->save(); 
+        
+        // dd($kontrak);
         if (Auth::user()->role == 0){
             return redirect()->back()->with('success', 'User created successfully');
         }else{

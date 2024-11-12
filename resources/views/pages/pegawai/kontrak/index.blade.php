@@ -51,7 +51,7 @@ Kontrak || Pegawai
                             <th>Awal Kontrak</th>
                             <th>Akhir Kontrak </th>
                             <th>Periode </th>
-                            <th>Project Name </th>
+                            <th>Duration </th>
                             <th>Action </th>
                         </tr>
                     </thead>
@@ -63,10 +63,16 @@ Kontrak || Pegawai
                             <td>{{$d->akhir_kontrak}}</td>
                             <td>{{$d->periode}}</td>
                             <td>
-                                @php
-                                    $name = \App\Models\ProjectM::where('id',$d->project_id)->value('judul');
-                                @endphp
-                                {{$name}}
+                              @php
+                                  $today = \Carbon\Carbon::now();
+                                  $endDate = \Carbon\Carbon::parse($d->akhir_kontrak);
+                                  $remainingDays = ceil($endDate->diffInDays($today, false)); // Round up to the nearest whole number
+                              @endphp
+                              @if ($remainingDays < 0)
+                              {{ abs($remainingDays) }} hari 
+                              @else
+                              <p class="text-danger">Kontrak Selesai</p>
+                              @endif
                             </td>
                             <td>
                                 <a href="" class="btn btn-warning">Print</a>

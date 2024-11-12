@@ -45,7 +45,7 @@ Kelola Kontrak || Human Capital
             <tr>
                 <th>No</th>
                 <th>Pegawai</th>
-                <th>Project Name</th>
+                <th>Duration</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Periode</th>
@@ -63,14 +63,25 @@ Kelola Kontrak || Human Capital
                 @endphp
                 {{$name}}
               </td>
+              
               <td>
                 @php
-                  $pn = \App\Models\ProjectM::where('id',$d->project_id)->value('judul');
+                    $today = \Carbon\Carbon::now();
+                    $endDate = \Carbon\Carbon::parse($d->akhir_kontrak);
+                    $remainingDays = ceil($endDate->diffInDays($today, false)); // Round up to the nearest whole number
                 @endphp
-                {{$pn == null ? 'Project Unavailable' : $pn}}
-              </td>
-              <td>{{$d->awal_kontrak}}</td>
-              <td>{{$d->akhir_kontrak}}</td>
+                @if ($remainingDays < 0)
+                {{ abs($remainingDays) }} hari 
+                @else
+                <p class="text-danger">Kontrak Selesai</p>
+                @endif
+
+            </td>
+            
+              <td>{{ $d->awal_kontrak }}</td>
+              <td>{{ $d->akhir_kontrak }}</td>
+              
+            
               <td>{{$d->periode}}</td>
               <td>
                 <a href="" class="btn btn-primary"><i class=""></i>Show</a>
