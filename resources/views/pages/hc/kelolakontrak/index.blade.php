@@ -75,9 +75,7 @@ Kelola Kontrak || Human Capital
                 @else
                 <p class="text-danger">Kontrak Selesai</p>
                 @endif
-
-            </td>
-            
+              </td>
               <td>{{ $d->awal_kontrak }}</td>
               <td>{{ $d->akhir_kontrak }}</td>
               
