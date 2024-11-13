@@ -58,7 +58,7 @@ Kelola Project || Ketua Project
                                         <th>Kode Project</th>
                                         <th>Divisi</th>
                                         <th>Status</th>
-                                        <th>Deskripsi</th>
+                                        <th>Kategori</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -72,13 +72,17 @@ Kelola Project || Ketua Project
                                             <td class="text-nowrap">
                                                 @if ($d->status == 0)
                                                     <a href="" class="text-red">Nonactive</a>
-                                                @elseif($d->status == 1)
-                                                    <a href="" class="text-orange">On-Progres</a>
+                                                    @elseif($d->status == 1 || $data->status == 5)
+                                                    @if ($d->status == 1)
+                                                    <a href="" class="text-success">Aktif</a>
+                                                    @else
+                                                    <a href="" class="text-orange">Pemeliharaan</a>
+                                                    @endif
                                                 @elseif($d->status == 2)
                                                     <a href="" class="text-green">Complete</a>
                                                 @endif
                                             </td>
-                                            <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }},00</td>
+                                            <td class="text-nowrap text-secondary">{{$d->kategori}}</td>
                                             <td class="text-nowrap">
                                                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
                                                 <a href="{{route('kapro.project.detail',$d->id)}}" class="btn btn-success">Detail</a>
@@ -96,7 +100,7 @@ Kelola Project || Ketua Project
                                         <th>Kode Project</th>
                                         <th>Divisi</th>
                                         <th>Status</th>
-                                        <th>Deskripsi</th>
+                                        <th>Kategori</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -110,13 +114,17 @@ Kelola Project || Ketua Project
                                             <td class="text-nowrap">
                                                 @if ($d->status == 0)
                                                     <a href="" class="text-red">Nonactive</a>
-                                                @elseif($d->status == 1)
-                                                    <a href="" class="text-orange">On-Progres</a>
+                                                    @elseif($d->status == 1 || $data->status == 5)
+                                                    @if ($d->status == 1)
+                                                    <a href="" class="text-success">Aktif</a>
+                                                    @else
+                                                    <a href="" class="text-orange">Pemeliharaan</a>
+                                                    @endif
                                                 @elseif($d->status == 2)
                                                     <a href="" class="text-green">Complete</a>
                                                 @endif
                                             </td>
-                                            <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }},00</td>
+                                            <td class="text-nowrap text-secondary">{{$data->kategori}}</td>
                                             <td class="text-nowrap">
                                                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
                                                 <a href="{{route('kapro.project.detail',$d->id)}}" class="btn btn-success">Detail</a>

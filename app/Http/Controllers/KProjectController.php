@@ -58,9 +58,12 @@ class KProjectController extends Controller
             'kode_uk' => 'required|string',
             'divisi' => 'required|string',
             'unit_kerja' => 'required|string',
-            'gaji' => 'required|integer',
+            // 'gaji' => 'required|integer',
             'start' => 'required|date',
             'end' => 'required|date',
+            'kategori' => 'required',
+            'statusin' => 'required',
+            'sbu' => 'required',
             'kapro' => 'required',
         ]);
 
@@ -72,7 +75,10 @@ class KProjectController extends Controller
         $project->divisi = $request->input('divisi');
         $project->kode_uk = $request->input('kode_uk');
         $project->unit_kerja = $request->input('unit_kerja');
-        $project->gaji = $request->input('gaji');
+        // $project->gaji = $request->input('gaji');
+        $project->kategori = $request->input('kategori');
+        $project->statusin = $request->input('statusin');
+        $project->sbu = $request->input('sbu');
         $project->start = $request->input('start');
         $project->end = $request->input('end');
         $project->status = 0; //inactive

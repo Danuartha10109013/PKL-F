@@ -65,7 +65,7 @@ Kelola Project || Human Capital
                                 <th>Kode Project</th>
                                 <th>Divisi</th>
                                 <th>Status</th>
-                                <th>Deskripsi</th>
+                                <th>Kategori</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -77,15 +77,18 @@ Kelola Project || Human Capital
                                     <td class="text-nowrap">{{$d->kode_project}}</td>
                                     <td>{{$d->divisi}}</td>
                                     <td class="text-nowrap">
-                                        @if ($d->status == 0)
-                                            <a href="" class="text-red">Nonactive</a>
-                                        @elseif($d->status == 1)
-                                            <a href="" class="text-orange">On-Progres</a>
-                                        @elseif($d->status == 2)
-                                            <a href="" class="text-green">Complete</a>
-                                        @endif
-                                    </td>
-                                    <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }} ,00</td>
+                                      @if ($d->status == 0)
+                                          <a href="" class="text-red">Nonactive</a>
+                                      @elseif($d->status == 1)
+                                          <a href="" class="text-success">Aktif</a>
+                                      @elseif($d->status == 5)
+                                          <a href="" class="text-orange">Pemeliharaan</a>
+                                      @elseif($d->status == 2)
+                                          <a href="" class="text-green">Complete</a>
+                                      @endif
+                                  </td>
+                                  
+                                    <td class="text-nowrap text-secondary">{{$d->kategori}}</td>
                                     <td class="text-nowrap">
                                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
                                         <a href="{{route('hc.project.detail',$d->id)}}" class="btn btn-success">Detail</a>
@@ -131,7 +134,7 @@ Kelola Project || Human Capital
                                 <th>Kode Project</th>
                                 <th>Divisi</th>
                                 <th>Status</th>
-                                <th>Deskripsi</th>
+                                <th>Kategori</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -143,15 +146,18 @@ Kelola Project || Human Capital
                                     <td class="text-nowrap">{{$d->kode_project}}</td>
                                     <td>{{$d->divisi}}</td>
                                     <td class="text-nowrap">
-                                        @if ($d->status == 0)
-                                            <a href="" class="text-red">Nonactive</a>
-                                        @elseif($d->status == 1)
-                                            <a href="" class="text-orange">On-Progres</a>
-                                        @elseif($d->status == 2)
-                                            <a href="" class="text-green">Complete</a>
-                                        @endif
-                                    </td>
-                                    <td class="text-nowrap text-secondary">Rp. {{ number_format($d->gaji, 0, ',', '.') }},00</td>
+                                      @if ($d->status == 0)
+                                          <a href="" class="text-red">Nonactive</a>
+                                      @elseif($d->status == 1)
+                                          <a href="" class="text-success">Aktif</a>
+                                      @elseif($d->status == 5)
+                                          <a href="" class="text-orange">Pemeliharaan</a>
+                                      @elseif($d->status == 2)
+                                          <a href="" class="text-green">Complete</a>
+                                      @endif
+                                  </td>
+                                  
+                                    <td class="text-nowrap text-secondary">{{$d->kategori}}</td>
                                     <td class="text-nowrap">
                                         <a href="#" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
                                         <a href="{{route('hc.kelola-project.detail',$d->id)}}" class="btn btn-success">Detail</a>
@@ -390,8 +396,24 @@ Kelola Project || Human Capital
                   @enderror
                 </div>
                 <div class="mb-3">
+                  <label class="form-label">Kategori</label>
+                  <select type="text" class="form-control" name="kategori" placeholder="Isi Dept Operasi">
+                    <option value="" selected disabled>--Pilih Kategori--</option>
+                    <option value="Besar" >Besar</option>
+                    <option value="Kecil" >Kecil</option>
+                    <option value="Mega D&B" >Mega D&B</option>
+                    <option value="Mega Non D&B" >Mega Non D&B</option>
+                    <option value="Menengah" >Menengah</option>
+                  </select>
+                </div>
+                <div class="mb-3">
                   <label class="form-label">Dept Operasi</label>
-                  <input type="text" class="form-control" name="divisi" placeholder="Isi Dept Operasi"></input>
+                  <select type="text" class="form-control" name="divisi" placeholder="Isi Dept Operasi">
+                    <option value="" selected disabled>--Pilih Departemen--</option>
+                    <option value="HSR Departement" >HSR Departement</option>
+                    <option value="Operation 1 Deaprtemen" >Operation 1 Deaprtemen</option>
+                    <option value="Operation 2 Deaprtemen" >Operation 2 Deaprtemen</option>
+                  </select>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Deskripsi (optional)</label>
@@ -406,15 +428,33 @@ Kelola Project || Human Capital
                 <div class="mb-3">
                   <label class="form-label"> Unit kerja</label>
                   <input type="text" class="form-control" name="unit_kerja" placeholder="Isi Unit kerja"></input>
-                </div>   
-                <div class="mb-3">
-                  <label class="form-label">Gaji Pokok</label>
-                  <input type="number" class="form-control" name="gaji" placeholder="Rp. 000000"></input>
                 </div>  
+                <div class="mb-3">
+                  <label class="form-label">Status project</label>
+                  <select type="text" class="form-control" name="statusin" placeholder="Isi Dept Operasi">
+                    <option value="" selected disabled>--Pilih Status--</option>
+                    <option value="Proyek JO" >Proyek JO</option>
+                    <option value="Proyek Non JO" >Proyek Non JO</option>
+                  </select>
+                </div> 
+                <div class="mb-3">
+                  <label class="form-label">Strategic Business Unit</label>
+                  <select type="text" class="form-control" name="sbu" placeholder="Isi Dept Operasi">
+                    <option value="" selected disabled>--Pilih SBU--</option>
+                    <option value="AIRPORT" >AIRPORT</option>
+                    <option value="BENDUNGAN" >BENDUNGAN</option>
+                    <option value="JALAN & JEMBATAN" >JALAN & JEMBATAN</option>
+                    <option value="RAILWAY" >RAILWAY</option>
+                    <option value="WATER INFRASTRUCTURE" >WATER INFRASTRUCTURE</option>
+                    <option value="Proyek Non JO" >Proyek Non JO</option>
+                  </select>
+                </div> 
+                 
                 <div class="mb-3">
                   <label class="form-label">Pilih Ketua Project</label>
                   <select class="form-control" name="kapro" id="kapro" required>
                     @foreach ($datakapro as $kaproin)
+                      <option value="" selected disabled>--Pilih Ketua Project--</option>
                       <option value="{{$kaproin->id}}">{{$kaproin->name}}</option>
                     @endforeach
                   </select>

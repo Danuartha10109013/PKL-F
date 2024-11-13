@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\KontrakM;
+use App\Models\LaporanM;
+use App\Models\ProjectM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +172,17 @@ public function delete($id)
 
     return redirect()->back()->with('error', 'Item not found.');
 }
+
+public function perpanjang(Request $request,$id){
+    $data = KontrakM::find($id);
+    $data->awal_kontrak = $request->start_date;
+    $data->akhir_kontrak = $request->end_date;
+    $data->periode = $data->periode + 1;
+    $data->save();
+
+    return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
+}
+
 
 
 }

@@ -19,9 +19,12 @@ class ProjectM extends Model
         'kode_uk',
         'divisi',
         'unit_kerja',
-        'gaji',
+        // 'gaji',
         'start',
         'end',
         'pegawai_id',
+        'kategori',
+        'statusin',
+        'sbu',
     ] ;
 }

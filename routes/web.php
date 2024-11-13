@@ -5,6 +5,7 @@ use App\Http\Controllers\KGajiController;
 use App\Http\Controllers\KKontrakController;
 use App\Http\Controllers\KProjectController;
 use App\Http\Controllers\KUserController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
@@ -32,6 +33,9 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::get('/', [DashbardController::class, 'pegawai'])->name('dashboard'); 
         Route::prefix('project')->group(function () {
             Route::get('/', [PegawaiController::class, 'project'])->name('project'); 
+            Route::get('/laporan/{id}', [PegawaiController::class, 'laporan'])->name('project.laporan'); 
+            Route::get('/detail/{id}', [PegawaiController::class, 'detail'])->name('project.detail'); 
+            Route::put('/update/{id}', [PegawaiController::class, 'update'])->name('project.update'); 
         
         });
         Route::prefix('kontrak')->group(function () {
@@ -53,6 +57,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::post('/store',[KUserController::class,'store'])->name('kelola-user.store');
             Route::get('/active/{id}',[KUserController::class,'active'])->name('kelola-user.active');
             Route::get('/nonactive/{id}',[KUserController::class,'nonactive'])->name('kelola-user.nonactive');
+            Route::post('/perpanjang/{id}',[KUserController::class,'perpanjang'])->name('kelola-user.perpanjang');
             Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
             Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
         });
@@ -65,6 +70,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('kelola-project.detail');
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
+            Route::get('/laporan/{id}',[LaporanController::class,'laporan'])->name('project.laporan');
 
         });
         //K Gaji
@@ -99,10 +105,11 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[ProjectController::class,'index'])->name('project');
             Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('project.detail');
             Route::post('/addUser',[ProjectController::class,'addUser'])->name('project.addUser');
-            Route::get('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
+            Route::post('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
             Route::get('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
             Route::delete('/delete/{id}',[ProjectController::class,'delete_user'])->name('project.delete.user');
             Route::post('/nilaiUser/{id}',[ProjectController::class,'nilaiUser'])->name('project.nilaiUser');
+            Route::get('/laporan/{id}',[LaporanController::class,'laporan'])->name('project.laporan');
         });
         
     });

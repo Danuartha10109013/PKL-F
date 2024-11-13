@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KontrakM;
+use App\Models\LaporanM;
 use App\Models\PenilaianM;
 use App\Models\ProjectM;
 use App\Models\User;
@@ -77,11 +78,11 @@ class ProjectController extends Controller
         return redirect()->back()->with('error', 'User is already assigned to this project.');
     }
 
-    public function activate($id)
+    public function activate(Request $request,$id)
     {
         $data = ProjectM::find($id);
     
-        $data->status = 1;
+        $data->status = $request->status;
         $data->save();
     
         $pegawaiList = json_decode($data->pegawai_id, true); 
@@ -113,6 +114,14 @@ class ProjectController extends Controller
         $data = ProjectM::find($id);
         $data->status = 2;
         $data->save();
+        $user = json_decode($data->pegawai_id);
+        foreach ($user as $u){
+            $laporan = new LaporanM();
+            $laporan->project_id = $data->id;
+            $laporan->user_id = $u;
+            $laporan->save();
+        }
+
         return redirect()->back()->with('success','Project telah selesai');
 
     }

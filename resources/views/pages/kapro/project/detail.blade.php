@@ -23,10 +23,14 @@ Detail Project || {{$data->judul}}
 @if (Auth::user()->role == 2)
   
 <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
-  @if ($data->status == 0)
+@if ($data->status == 0)
   <a href="#" class="btn btn-primary" style="margin-right: 15px" data-toggle="modal" data-target="#activateModal">Activate</a>
-@elseif ($data->status == 1)
-  <a href="#" class="btn btn-warning" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">On Progress</a>
+@elseif ($data->status == 1 || $data->status == 5)
+@if ($data->status == 1)
+<a href="#" class="btn btn-success" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">Aktif</a>
+@else
+<a href="#" class="btn btn-warning" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">Pemeliharaan</a>
+@endif
 @elseif ($data->status == 2)
   <a class="btn btn-success" style="margin-right: 15px" data-toggle="modal" data-target="#completeModal">Complete</a>
 @endif
@@ -43,14 +47,25 @@ Detail Project || {{$data->judul}}
       </div>
       <div class="modal-body">
         Are you sure you want to activate this project?
+        <form action="{{ route('kapro.project.activate', $data->id) }}" method="POST">
+          @csrf
+          <div class="mb-3 mt-3">
+            <select type="text" class="form-control" name="status" placeholder="Isi Dept Operasi" required>
+              <option value="" selected disabled>--Pilih Status--</option>
+              <option value="1">Aktif</option>
+              <option value="5">Pemeliharaan</option>
+            </select>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <a href="{{route('kapro.project.activate', $data->id)}}" class="btn btn-primary">Yes, Activate</a>
+        <button type="submit" class="btn btn-primary">Yes, Activate</button>
       </div>
+        </form>
     </div>
   </div>
 </div>
+
 
 <!-- On Progress Modal -->
 <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
@@ -118,23 +133,34 @@ Detail Project || {{$data->judul}}
               <div class="col-md-6">
                 <p><strong>Judul:</strong> {{$data->judul}}</p>
                 <p><strong>Kode Project:</strong> {{$data->kode_project}}</p>
+                <p><strong>Kategori:</strong> {{$data->kategori}}</p>
+                <p><strong>Status:</strong> {{$data->statusin}}</p>
+                <p><strong>SBU:</strong> {{$data->sbu}}</p>
                 <p><strong>Deskripsi:</strong> {{$data->deskripsi}}</p>
               </div>
               <div class="col-md-6">
                 <p><strong>Dept Operation:</strong> {{$data->divisi}}</p>
                 <p><strong>Kode Unit Kerja:</strong> {{$data->kode_uk}}</p>
                 <p><strong>Unit Kerja:</strong> {{$data->unit_kerja}}</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <p><strong>Gaji:</strong> Rp. {{ number_format($data->gaji, 0, ',', '.') }} ,00</p>
-              </div>
-              <div class="col-md-6">
                 <p><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($data->start)->format('d M Y') }}</p>
                 <p><strong>End Date:</strong> {{ \Carbon\Carbon::parse($data->end)->format('d M Y') }}</p>
+                @if (Auth::user()->role == 0)
+                  @if ($data->status == 0)
+                    <a href="#" class="btn btn-primary" style="margin-right: 15px" data-toggle="modal" data-target="#activateModal">Activate</a>
+                  @elseif ($data->status == 1 || $data->status == 5)
+                  @if ($data->status == 1)
+                  <a href="#" class="btn btn-success" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">Aktif</a>
+                  @else
+                  <a href="#" class="btn btn-warning" style="margin-right: 15px" data-toggle="modal" data-target="#progressModal">Pemeliharaan</a>
+                  @endif
+                  @elseif ($data->status == 2)
+                    <a class="btn btn-success" style="margin-right: 15px" data-toggle="modal" data-target="#completeModal">Complete</a>
+                  @endif
+                @else
+                @endif  
               </div>
             </div>
+            
 
             <!-- Users List -->
             <div id="users-list" class="mt-4">
@@ -209,12 +235,15 @@ Detail Project || {{$data->judul}}
                           @endphp
                    
                         
-                   @if ($ids == 1 && $data->id == $project)
+                      @if ($ids == 1 && $data->id == $project)
                       Sudah DIniliai
                       @elseif ($data->status == 2)
+                      @if (Auth::user()->role == 2)
                       <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nilaiModal{{ $d->id }}">
                         Beri Nilai
                       </button>
+                      @else
+                      @endif
                       @else
                           @endif
 
@@ -311,7 +340,11 @@ Detail Project || {{$data->judul}}
                           @endif
                         </td>
                         <td>
-                          <a href="" class="btn btn-primary">Lihat Laporan</a>
+                          @if (Auth::user()->role == 0)
+                          <a href="{{route('hc.project.laporan',$d->id)}}" class="btn btn-primary">Lihat Laporan</a>
+                          @elseif (Auth::user()->role == 2)
+                          <a href="{{route('kapro.project.laporan',$d->id)}}" class="btn btn-primary">Lihat Laporan</a>
+                          @endif
                         </td>
                         @else
                         @endif

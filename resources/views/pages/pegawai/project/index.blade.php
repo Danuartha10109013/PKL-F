@@ -80,10 +80,9 @@ Project || Pegawai
                             <td>{{$d->start}}</td>
                             <td>{{$d->end}}</td>
                             <td>
-                                <a href="" class="btn btn-warning">Print</a>
-                                <a href="" class="btn btn-primary">Detail</a>
+                                <a href="{{route('pegawai.project.detail',$d->id)}}" class="btn btn-primary">Detail</a>
                                 @if ($d->status == 2)
-                                <a href="" class="btn btn-success">Isi laporan</a>
+                                <a href="{{route('pegawai.project.laporan',$d->id)}}" class="btn btn-success">Isi laporan</a>
                                 @else
                                 @endif
                             </td>
