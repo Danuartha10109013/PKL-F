@@ -480,6 +480,20 @@ Detail Project || {{$data->judul}}
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Awal Kontrak</label>
+                <input type="date" class="form-control" name="awal" value="{{ now()->format('Y-m-d') }}" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Akhir Kontrak</label>
+                <input type="date" class="form-control" name="akhir" placeholder="Your name" required>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
