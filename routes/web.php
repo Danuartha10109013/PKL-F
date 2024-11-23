@@ -7,6 +7,7 @@ use App\Http\Controllers\KProjectController;
 use App\Http\Controllers\KUserController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ManajerHcController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -70,7 +71,8 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('kelola-project.detail');
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
-            Route::get('/laporan/{id}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::get('/laporan//kapro/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.kapro');
 
         });
         //K Gaji
@@ -85,6 +87,18 @@ Route::middleware([AutoLogout::class])->group(function () {
     
     Route::group(['prefix' => 'manajerhc', 'middleware' => ['manajerhc'], 'as' => 'manajerhc.'], function () {
         Route::get('/', [DashbardController::class, 'manajerhc'])->name('dashboard'); //not same
+
+        Route::prefix('laporan')->group(function () {
+            Route::get('/',[ManajerHcController::class,'index'])->name('project');
+            Route::get('/project/{id}',[ManajerHcController::class,'detail'])->name('project.detail');
+            Route::get('/project/laporan/{id}',[ManajerHcController::class,'laporankapro'])->name('project.laporan');
+            Route::get('/project/laporan/pegawai/{id}/{id1}',[ManajerHcController::class,'laporanpegawai'])->name('project.laporanpegawai');
+            
+        });
+        Route::prefix('kontrak')->group(function () {
+            Route::get('/',[ManajerHcController::class,'index'])->name('kontrak');
+            
+        });
         
     });
 
@@ -109,7 +123,10 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
             Route::delete('/delete/{id}',[ProjectController::class,'delete_user'])->name('project.delete.user');
             Route::post('/nilaiUser/{id}',[ProjectController::class,'nilaiUser'])->name('project.nilaiUser');
-            Route::get('/laporan/{id}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::get('/isilaporan/{id}', [ProjectController::class, 'isilaporan'])->name('project.laporan.isi'); 
+            Route::put('/update/{id}', [ProjectController::class, 'isiupdate'])->name('project.update.isi'); 
+
         });
         
     });

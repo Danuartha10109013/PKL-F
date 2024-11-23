@@ -1,6 +1,6 @@
 @extends('layout.pegawai.main')
 @section('title')
-Laporan Prgawai || Ketua Project
+Laporan Pegawai || Ketua Project
 @endsection
 @section('content')
     <!-- Page body -->

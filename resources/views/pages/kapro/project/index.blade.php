@@ -72,12 +72,10 @@ Kelola Project || Ketua Project
                                             <td class="text-nowrap">
                                                 @if ($d->status == 0)
                                                     <a href="" class="text-red">Nonactive</a>
-                                                    @elseif($d->status == 1 || $data->status == 5)
-                                                    @if ($d->status == 1)
+                                                @elseif ($d->status == 1)
                                                     <a href="" class="text-success">Aktif</a>
-                                                    @else
+                                                @elseif($d->status == 5)
                                                     <a href="" class="text-orange">Pemeliharaan</a>
-                                                    @endif
                                                 @elseif($d->status == 2)
                                                     <a href="" class="text-green">Complete</a>
                                                 @endif
@@ -86,6 +84,9 @@ Kelola Project || Ketua Project
                                             <td class="text-nowrap">
                                                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-report-{{ $d->id }}">Edit</a>
                                                 <a href="{{route('kapro.project.detail',$d->id)}}" class="btn btn-success">Detail</a>
+                                                @if ($d->status == 2)
+                                                <a href="{{route('kapro.project.laporan.isi',$d->id)}}" class="btn btn-gray">Isi Laporan</a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -114,12 +115,10 @@ Kelola Project || Ketua Project
                                             <td class="text-nowrap">
                                                 @if ($d->status == 0)
                                                     <a href="" class="text-red">Nonactive</a>
-                                                    @elseif($d->status == 1 || $data->status == 5)
-                                                    @if ($d->status == 1)
+                                                @elseif ($d->status == 1)
                                                     <a href="" class="text-success">Aktif</a>
-                                                    @else
+                                                @elseif($d->status == 5)
                                                     <a href="" class="text-orange">Pemeliharaan</a>
-                                                    @endif
                                                 @elseif($d->status == 2)
                                                     <a href="" class="text-green">Complete</a>
                                                 @endif

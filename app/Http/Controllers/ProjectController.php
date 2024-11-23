@@ -122,6 +122,11 @@ class ProjectController extends Controller
             $laporan->save();
         }
 
+        $laporankapro = new LaporanM();
+        $laporankapro->project_id = $data->id;
+        $laporan->user_id = $data->kapro_id;
+        $laporan->save();
+
         return redirect()->back()->with('success','Project telah selesai');
 
     }
@@ -175,6 +180,45 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'Nilai berhasil diberikan untuk ' . $user->name);
     }
     
+    public function isilaporan($id){
+        $data = ProjectM::find($id);
+        $ids = LaporanM::where('user_id',$data->kapro_id)->where('project_id',$id)->value('id');
+        $laporan= LaporanM::find($ids);
+        // dd($laporan);
+        return view('pages.kapro.project.laporankapro',compact('data','laporan'));
+    }
 
+    public function isiupdate(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'ringkasan' => 'nullable|string',
+            'pencapaian' => 'nullable|string',
+            'hasil' => 'nullable|string',
+            'kendala' => 'nullable|string',
+            'solusi' => 'nullable|string',
+            'rencana' => 'nullable|string',
+            'inisiatif_tambahan' => 'nullable|string',
+            'catatan' => 'nullable|string',
+        ]);
+
+        // Find the LaporanM instance by ID
+        $laporan = LaporanM::findOrFail($id);
+
+        // Update the model's attributes
+        $laporan->ringkasan = $request->input('ringkasan');
+        $laporan->pencapaian = $request->input('pencapaian');
+        $laporan->hasil = $request->input('hasil');
+        $laporan->kendala = $request->input('kendala');
+        $laporan->solusi = $request->input('solusi');
+        $laporan->rencana = $request->input('rencana');
+        $laporan->inisiatif_tambahan = $request->input('inisiatif_tambahan');
+        $laporan->catatan = $request->input('catatan');
+
+        // Save the changes to the database
+        $laporan->save();
+        // Redirect or return a response, possibly with a success message
+        return redirect()->route('kapro.project')->with('success', 'Laporan updated successfully.');
+    }
     
 }
