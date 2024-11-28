@@ -220,5 +220,10 @@ class ProjectController extends Controller
         // Redirect or return a response, possibly with a success message
         return redirect()->route('kapro.project')->with('success', 'Laporan updated successfully.');
     }
+
+    public function print($id){
+        $data = ProjectM::find($id);
+        return view('pages.manajerhc.project.print',compact('data'));
+    }
     
 }

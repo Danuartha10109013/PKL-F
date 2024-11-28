@@ -72,7 +72,8 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
             Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
-            Route::get('/laporan//kapro/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.kapro');
+            Route::get('/laporan/kapro/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.kapro');
+
 
         });
         //K Gaji
@@ -93,6 +94,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/project/{id}',[ManajerHcController::class,'detail'])->name('project.detail');
             Route::get('/project/laporan/{id}',[ManajerHcController::class,'laporankapro'])->name('project.laporan');
             Route::get('/project/laporan/pegawai/{id}/{id1}',[ManajerHcController::class,'laporanpegawai'])->name('project.laporanpegawai');
+            Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
             
         });
         Route::prefix('kontrak')->group(function () {

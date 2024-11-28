@@ -10,13 +10,20 @@ Detail Project || {{$data->judul}}
     <div class="row g-2 align-items-center">
       <div class="col">
         <!-- Page pre-title -->
-        <div class="page-pretitle">
-          Overview
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <div class="page-pretitle">
+              Overview
+            </div>
+            <h2 class="page-title">
+              Detail Project
+            </h2>
+          </div>
+          <a href="{{route('manajerhc.project.print',$data->id)}}" class="btn btn-warning">
+            <i class="ti ti-printer"></i> Print
+          </a>
         </div>
-        <h2 class="page-title">
-          Detail Project
-        </h2>
-      </div>
+        
     </div>
   </div>
 </div>
@@ -128,7 +135,7 @@ Detail Project || {{$data->judul}}
         <div class="card">
           <div class="card-body">
             <!-- Project Information -->
-            <h3 class="mb-4">Project Information</h3>
+            <h3 class="mb-4">Project Information</h3> 
             <div class="row">
               <div class="col-md-6">
                 <p><strong>Judul:</strong> {{$data->judul}}</p>
