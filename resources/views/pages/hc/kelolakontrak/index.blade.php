@@ -18,7 +18,11 @@ Kelola Kontrak || Human Capital
       </div>
       <div class="col-auto ms-auto d-print-none d-flex align-items-center position-relative">
         <!-- Search Form -->
+        @if (Auth::user()->role == 0)
         <form action="{{ route('hc.kelola-kontrak') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
+        @else
+        <form action="{{ route('manajerhc.kontrak') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
+        @endif
             <input type="text" id="searchInput" name="search" class="form-control w-100" 
                    placeholder="Search kontrak..." value="{{ request()->query('search') }}">
             <!-- Clear 'X' Button outside the input -->
@@ -33,8 +37,11 @@ Kelola Kontrak || Human Capital
         </form>
     
         <!-- Tambahkan Pegawai Baru Button -->
-        <a href="{{route('hc.kelola-user.add')}}" class="btn btn-success d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
-            
+        @if (Auth::user()->role == 0)
+        <a href="{{route('hc.kelola-kontrak.export')}}" class="btn btn-success d-none d-sm-inline-block ms-3" >
+        @else
+        <a href="{{route('manajerhc.kontrak.export')}}" class="btn btn-success d-none d-sm-inline-block ms-3" >
+        @endif
             Get All Kontrak
         </a>
     </div>
@@ -98,7 +105,11 @@ Kelola Kontrak || Human Capital
                               <h5 class="modal-title" id="perpanjangModalLabel-{{ $d->id }}">Perpanjang User</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <form action="{{ route('hc.kelola-user.perpanjang', $d->id) }}" method="POST">
+                          @if (Auth::user()->role == 0)
+                            <form action="{{ route('hc.kelola-user.perpanjang', $d->id) }}" method="POST">
+                          @else
+                            <form action="{{ route('manajerhc.perpanjang.post', $d->id) }}" method="POST">
+                          @endif
                               @csrf
                               <div class="modal-body">
                                   <!-- Start Date Input (Default to Today) -->

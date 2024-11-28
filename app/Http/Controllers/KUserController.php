@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UserExportExcel;
 use App\Models\KontrakM;
 use App\Models\LaporanM;
 use App\Models\ProjectM;
@@ -9,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KUserController extends Controller
 {
@@ -181,6 +183,11 @@ public function perpanjang(Request $request,$id){
     $data->save();
 
     return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
+}
+
+public function export(){
+    $date = now()->format('d-m-Y'); 
+    return Excel::download(new UserExportExcel, $date . '_Data_Pegawai.xlsx');
 }
 
 

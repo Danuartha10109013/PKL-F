@@ -9,6 +9,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManajerHcController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PerpanjangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AutoLogout;
@@ -61,6 +62,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::post('/perpanjang/{id}',[KUserController::class,'perpanjang'])->name('kelola-user.perpanjang');
             Route::put('/update/{id}',[KUserController::class,'update'])->name('kelola-user.update');
             Route::delete('/delete/{id}',[KUserController::class,'delete'])->name('kelola-user.delete');
+            Route::get('/export',[KUserController::class,'export'])->name('kelola-user.export');
         });
         
         //K Project
@@ -82,6 +84,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('k-kontrak')->group(function () {
             Route::get('/',[KKontrakController::class,'index'])->name('kelola-kontrak');
+            Route::get('/export',[KKontrakController::class,'export'])->name('kelola-kontrak.export');
         });
     });
 
@@ -98,8 +101,14 @@ Route::middleware([AutoLogout::class])->group(function () {
             
         });
         Route::prefix('kontrak')->group(function () {
-            Route::get('/',[ManajerHcController::class,'index'])->name('kontrak');
+            Route::get('/',[KKontrakController::class,'index'])->name('kontrak');
+            Route::get('/export',[KKontrakController::class,'export'])->name('kontrak.export');
+
             
+        });
+        Route::prefix('perpanjang')->group(function () {
+            Route::get('/',[PerpanjangController::class,'index'])->name('perpanjang');
+            Route::post('/perpanjang/{id}',[KUserController::class,'perpanjang'])->name('perpanjang.post');
         });
         
     });

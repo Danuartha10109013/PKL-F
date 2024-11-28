@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportKontrakExcel;
 use App\Models\KontrakM;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KKontrakController extends Controller
 {
@@ -29,5 +31,9 @@ class KKontrakController extends Controller
         return view('pages.hc.kelolakontrak.index', compact('data', 'search'));
     }
 
+    public function export(){
+        $date = now()->format('d-m-Y'); 
+        return Excel::download(new ExportKontrakExcel, $date . '_Kontrak.xlsx');
+    }
 
 }

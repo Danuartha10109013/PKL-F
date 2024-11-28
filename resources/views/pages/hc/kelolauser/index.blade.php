@@ -42,6 +42,7 @@ Kelola User || Human Capital
             </svg>
             Tambahkan User Baru
         </a>
+        <a href="{{route('hc.kelola-user.export')}}" class="btn btn-warning ms-3"><i class="fa fa-download"></i> Export Data</a>
     </div>
     
     <script>

@@ -59,8 +59,8 @@
       </a>
     </li>
 
-    <li class="nav-item {{ Route::currentRouteName() == 'manajerhc.kontrak' ? 'active' : '' }}">
-      <a class="nav-link" href="{{route('manajerhc.kontrak')}}">
+    <li class="nav-item {{ Route::currentRouteName() == 'manajerhc.perpanjang' ? 'active' : '' }}">
+      <a class="nav-link" href="{{route('manajerhc.perpanjang')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">
           <i class="ti ti-file-signal"></i>
         </span>
