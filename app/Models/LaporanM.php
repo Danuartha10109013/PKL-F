@@ -24,3 +24,4 @@ class LaporanM extends Model
         'catatan',
     ];
 }
+
