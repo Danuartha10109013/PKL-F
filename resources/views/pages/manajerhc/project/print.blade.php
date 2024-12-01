@@ -50,47 +50,96 @@
 <body onload="window.print()">
     <!-- Logo -->
     <img src="{{ asset('logo_wika.png') }}" alt="Logo" class="logo">
-
+    <header>
+        <center>
+           <h5 style="color: rgb(84, 128, 240)"> PT WIJAYA KARYA (PERSERO)TBK</h5>
+            <h6 style="color: rgb(84, 128, 240);margin-top: -20px">
+                Jl. DI. Panjaitan No.Kav. 9-10, RT.1/RW.11, Cipinang Cempedak, Kecamatan Jatinegara, <br>
+                Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13340
+            </h6>
+        </center>
+        <hr style="height: 2px;color: #000;background-color: #000">
+    </header>
     <!-- Title -->
     <h1>LAPORAN PROJECT</h1>
 
     <!-- Main Table -->
     <table>
         <tr>
-            <th colspan="4">Judul</th>
+            <th colspan="3">{{ $data->judul }}</th>
         </tr>
         <tr>
-            <td colspan="4">{{ $data->judul }}</td>
-        </tr>
-        <tr>
-            <th colspan="2">Kode Project</th>
-            <td colspan="2">{{ $data->kode_project }}</td>
+            <td colspan="3">{{ $data->kode_project }}</td>
         </tr>
         <tr>
             <th>Kode Unit Kerja</th>
+            <td> : </td>
             <td>{{ $data->kode_uk }}</td>
-            <th>Unit Kerja</th>
-            <td>{{ $data->unit_kerja }}</td>
         </tr>
         <tr>
-            <th>Status</th>
-            <td>{{ $data->status }}</td>
-            <th>Kategori</th>
+            <th >Unit Kerja</th>
+            <td> : </td>
+            <td>{{ $data->kode_uk }}</td>
+        </tr>
+        <tr>
+            @php
+                $kapro = \App\Models\User::find($data->kapro_id);
+            @endphp
+            <th >Ketua Project</th>
+            <td> : </td>
+            <td>{{ $kapro->name }}</td>
+        </tr>
+        <tr>
+            <th >Kategori</th>
+            <td> : </td>
             <td>{{ $data->kategori }}</td>
         </tr>
         <tr>
-            <th>Start Date</th>
+            <th >SBU</th>
+            <td> : </td>
+            <td>{{ $data->sbu }}</td>
+        </tr>
+        <tr>
+            <th >Status</th>
+            <td> : </td>
+            <td>{{ $data->statusin }}</td>
+        </tr>
+        
+        <tr>
+            <th >Start Date</th>
+            <td> : </td>
             <td>{{ \Carbon\Carbon::parse($data->start_date)->format('d M Y') }}</td>
-            <th>End Date</th>
+        </tr>
+        
+        <tr>
+            <th >Status</th>
+            <td> : </td>
+            @if ($data->status == 0)
+            <td style="color: orange">Belum Dimulai</td>
+            @elseif ($data->status == 1)
+            <td style="color: blue">Akitf</td>
+            @elseif ($data->status == 5)
+            <td style="color: yellow">Pemeliharaan</td>
+            @elseif ($data->status == 2)
+            <td style="color: green">Selesai</td>
+            @else
+            <td style="color: red">Unknown</td>
+            
+            @endif
+        </tr>
+        <tr>
+            <th >End Date</th>
+            <td> : </td>
             <td>{{ \Carbon\Carbon::parse($data->end_date)->format('d M Y') }}</td>
         </tr>
+        <tr>
+            <th colspan="3">Deskripsi</th>
+        </tr>
+        <tr>
+            <td colspan="3">{{ $data->deskripsi }}</td>
+        </tr>
+        
     </table>
-
-    <!-- Description -->
-    <h3>DESKRIPSI:</h3>
-    <div class="description">
-        {{ $data->deskripsi }}
-    </div>
 
     <!-- Users Involved -->
     <h3>USER YANG TERLIBAT:</h3>
@@ -100,6 +149,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Email</th>
+                <th>Nilai</th>
                 <th>Role</th>
             </tr>
         </thead>
@@ -121,6 +171,14 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    <td>
+                        @php
+                        $project = $data->id;
+                        $ids = \App\Models\PenilaianM::where('user_id', $user->id)->where('project_id',$project)->count();
+                          $total = \App\Models\PenilaianM::where('user_id', $user->id)->where('project_id',$project)->value('total');
+                        @endphp
+                        {{$total}}
+                    </td>
                     <td>Pegawai</td>
                 </tr>
             @endforeach

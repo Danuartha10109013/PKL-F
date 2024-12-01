@@ -92,46 +92,46 @@ Kelola Kontrak || Human Capital
                 @if ($remainingDays < 0)
                 
                 @else
-                <!-- Trigger Button -->
-                <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $d->id }}">
-                  <i class=""></i> Perpanjang
-                </a>
+                  <!-- Trigger Button -->
+                  @if (Auth::user()->role == 3)
 
-                <!-- Modal Structure -->
-                <div class="modal fade" id="perpanjangModal-{{ $d->id }}" tabindex="-1" aria-labelledby="perpanjangModalLabel-{{ $d->id }}" aria-hidden="true">
-                  <div class="modal-dialog">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="perpanjangModalLabel-{{ $d->id }}">Perpanjang User</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          @if (Auth::user()->role == 0)
-                            <form action="{{ route('hc.kelola-user.perpanjang', $d->id) }}" method="POST">
-                          @else
-                            <form action="{{ route('manajerhc.perpanjang.post', $d->id) }}" method="POST">
-                          @endif
-                              @csrf
-                              <div class="modal-body">
-                                  <!-- Start Date Input (Default to Today) -->
-                                  <div class="mb-3">
-                                      <label for="startDate" class="form-label">Start Date</label>
-                                      <input type="date" name="start_date" id="startDate" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" required>
-                                  </div>
+                  <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $d->id }}">
+                    <i class=""></i> Perpanjang
+                  </a>
 
-                                  <!-- End Date Input (User Selected) -->
-                                  <div class="mb-3">
-                                      <label for="endDate" class="form-label">End Date</label>
-                                      <input type="date" name="end_date" id="endDate" class="form-control" required>
-                                  </div>
-                              </div>
-                              <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-success">Save Changes</button>
-                              </div>
-                          </form>
-                      </div>
+                  <!-- Modal Structure -->
+                  <div class="modal fade" id="perpanjangModal-{{ $d->id }}" tabindex="-1" aria-labelledby="perpanjangModalLabel-{{ $d->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="perpanjangModalLabel-{{ $d->id }}">Perpanjang User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                              <form action="{{ route('manajerhc.perpanjang.post', $d->id) }}" method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <!-- Start Date Input (Default to Today) -->
+                                    <div class="mb-3">
+                                        <label for="startDate" class="form-label">Start Date</label>
+                                        <input type="date" name="start_date" id="startDate" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" required>
+                                    </div>
+
+                                    <!-- End Date Input (User Selected) -->
+                                    <div class="mb-3">
+                                        <label for="endDate" class="form-label">End Date</label>
+                                        <input type="date" name="end_date" id="endDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                   </div>
-                </div>
+                  @endif
+
                 @endif
                 <a href="" class="btn btn-primary"><i class=""></i>Show</a>
                 <a href="" class="btn btn-warning">Print</a>

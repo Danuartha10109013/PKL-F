@@ -42,7 +42,6 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('kontrak')->group(function () {
             Route::get('/', [PegawaiController::class, 'kontrak'])->name('kontrak'); 
-        
         });
 
     });
@@ -74,7 +73,8 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
             Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
-            Route::get('/laporan/kapro/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.kapro');
+            Route::get('/laporan/kapro/karpo/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.ketua.project');
+            Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
 
 
         });
@@ -137,6 +137,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
             Route::get('/isilaporan/{id}', [ProjectController::class, 'isilaporan'])->name('project.laporan.isi'); 
             Route::put('/update/{id}', [ProjectController::class, 'isiupdate'])->name('project.update.isi'); 
+            Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
 
         });
         

@@ -19,9 +19,19 @@ Detail Project || {{$data->judul}}
               Detail Project
             </h2>
           </div>
+          @if (Auth::user()->role == 0)
+          <a href="{{route('hc.project.print',$data->id)}}" class="btn btn-warning">
+            <i class="ti ti-printer"></i> Print
+          </a>
+          @elseif (Auth::user()->role == 2)
+          <a href="{{route('kapro.project.print',$data->id)}}" class="btn btn-warning">
+            <i class="ti ti-printer"></i> Print
+          </a>
+          @elseif (Auth::user()->role == 3)
           <a href="{{route('manajerhc.project.print',$data->id)}}" class="btn btn-warning">
             <i class="ti ti-printer"></i> Print
           </a>
+          @endif
         </div>
         
     </div>
@@ -170,7 +180,7 @@ Detail Project || {{$data->judul}}
                 @elseif (Auth::user()->role == 2)
                 <a href="{{route('kapro.project.laporan.isi',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
                 @elseif (Auth::user()->role == 0)
-                <a href="{{route('hc.project.laporan.kapro',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
+                <a href="{{route('hc.project.laporan.ketua.project',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
 
                 @endif
               </div>
