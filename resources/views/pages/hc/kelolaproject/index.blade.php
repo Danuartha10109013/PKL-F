@@ -451,10 +451,10 @@ Kelola Project || Human Capital
                 </div> 
                  
                 <div class="mb-3">
-                  <label class="form-label">Pilih Ketua Project</label>
+                  <label class="form-label">Pilih KasieKA</label>
                   <select class="form-control" name="kapro" id="kapro" required>
                     @foreach ($datakapro as $kaproin)
-                      <option value="" selected disabled>--Pilih Ketua Project--</option>
+                      <option value="" selected disabled>--Pilih KasieKA--</option>
                       <option value="{{$kaproin->id}}">{{$kaproin->name}}</option>
                     @endforeach
                   </select>
