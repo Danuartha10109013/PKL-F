@@ -176,11 +176,11 @@ Detail Project || {{$data->judul}}
                 @else
                 @endif  
                 @if (Auth::user()->role == 3)
-                <a href="{{route('manajerhc.project.laporan',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
+                <a href="{{route('manajerhc.project.laporan',$data->id)}}" class="btn btn-primary">Lihat Laporan KasieKA</a>
                 @elseif (Auth::user()->role == 2)
-                <a href="{{route('kapro.project.laporan.isi',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
+                <a href="{{route('kapro.project.laporan.isi',$data->id)}}" class="btn btn-primary">Lihat Laporan KasieKA</a>
                 @elseif (Auth::user()->role == 0)
-                <a href="{{route('hc.project.laporan.ketua.project',$data->id)}}" class="btn btn-primary">Lihat Laporan Kapro</a>
+                <a href="{{route('hc.project.laporan.ketua.project',$data->id)}}" class="btn btn-primary">Lihat Laporan KasieKA</a>
 
                 @endif
               </div>
