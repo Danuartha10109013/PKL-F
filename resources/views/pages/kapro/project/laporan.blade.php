@@ -1,6 +1,6 @@
 @extends('layout.pegawai.main')
 @section('title')
-Laporan Pegawai || Ketua Project
+Laporan Pegawai || Kepala seksi kesejahteraan aparatur
 @endsection
 @section('content')
     <!-- Page body -->

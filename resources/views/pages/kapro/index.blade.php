@@ -1,6 +1,6 @@
 @extends('layout.pegawai.main')
 @section('title')
-Dashboard || Kepala Proyek
+Dashboard || Kepala seksi kesejahteraan aparatur
 @endsection
 @section('content')
 <!-- Page header -->

@@ -1,6 +1,6 @@
 @extends('layout.pegawai.main')
 @section('title')
-Kelola Project || Ketua Project
+Kelola Project || Kepala seksi kesejahteraan aparatur
 @endsection
 @section('content')
 <!-- Page header -->
