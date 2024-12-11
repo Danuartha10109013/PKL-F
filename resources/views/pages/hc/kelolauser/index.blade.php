@@ -99,7 +99,7 @@ Kelola User || Human Capital
                       @elseif ($d->role == 1)
                         Pegawai
                       @elseif ($d->role == 2)
-                        Ketua Project
+                        KasieKA
                       @elseif ($d->role == 3)
                         Manajer HC
                       @elseif ($d->role == 4)
@@ -431,7 +431,7 @@ Kelola User || Human Capital
                       @elseif ($d->role == 1)
                         Pegawai
                       @elseif ($d->role == 2)
-                        Ketua Project
+                      KasieKA
                       @elseif ($d->role == 3)
                         Manajer HC
                       @elseif ($d->role == 4)
@@ -575,7 +575,7 @@ Kelola User || Human Capital
                                         <span class="form-selectgroup-check"></span>
                                       </span>
                                       <span class="form-selectgroup-label-content">
-                                        <span class="form-selectgroup-title strong mb-1">Ketua Project</span>
+                                        <span class="form-selectgroup-title strong mb-1">KasieKA</span>
                                       </span>
                                     </span>
                                   </label>
