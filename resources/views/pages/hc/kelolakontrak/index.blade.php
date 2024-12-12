@@ -133,7 +133,7 @@ Kelola Kontrak || Human Capital
                   @endif
 
                 @endif
-                <a href="" class="btn btn-primary"><i class=""></i>Show</a>
+                <a href="{{route('hc.kelola-kontrak.show',$d->id)}}" class="btn btn-primary"><i class=""></i>Show</a>
                 <a href="" class="btn btn-warning">Print</a>
               </td>
             </tr>

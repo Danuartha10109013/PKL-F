@@ -242,10 +242,7 @@ Kelola Project || Human Capital
                                         <input type="text" class="form-control" name="unit_kerja" placeholder="Isi Unit Kerja" value="{{ old('unit_kerja', $d->unit_kerja) }}">
                                     </div>
                                 
-                                    <div class="mb-3">
-                                        <label class="form-label">Gaji</label>
-                                        <input type="number" class="form-control" name="gaji" placeholder="Isi Gaji" value="{{ old('gaji', $d->gaji) }}">
-                                    </div>
+                                    
                                 
                                     <div class="mb-3">
                                       <label class="form-label">Pilih Ketua Project</label>

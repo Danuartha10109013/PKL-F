@@ -85,6 +85,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::prefix('k-kontrak')->group(function () {
             Route::get('/',[KKontrakController::class,'index'])->name('kelola-kontrak');
             Route::get('/export',[KKontrakController::class,'export'])->name('kelola-kontrak.export');
+            Route::get('/show/{id}',[KKontrakController::class,'show'])->name('kelola-kontrak.show');
         });
     });
 

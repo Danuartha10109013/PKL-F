@@ -25,7 +25,7 @@ Laporan Pegawai || Kepala seksi kesejahteraan aparatur
                     <div class="col-md-6">
                         <p>
                         <div class="row">
-                            <div class="col-md-3">Ringkasan :</div>
+                            <div class="col-md-3">Kondisi Saat Ini :</div>
                             <div class="col-md-9">{{$laporan->ringkasan}}</div>
                         </div>
                         <br> </p>
@@ -41,38 +41,22 @@ Laporan Pegawai || Kepala seksi kesejahteraan aparatur
                             <div class="col-md-9">{{$laporan->hasil}}</div>
                         </div>
                          <br> </p>
-                         <p>
-                        <div class="row">
-                            <div class="col-md-3">Kendala : </div>
-                            <div class="col-md-9">{{$laporan->kendala}}</div>
-                        </div>
-                        <br> </p>
+                        
                     </div>
                     <div class="col-md-6">
+                        <p>
+                            <div class="row">
+                                <div class="col-md-3">Kendala : </div>
+                                <div class="col-md-9">{{$laporan->kendala}}</div>
+                            </div>
+                            <br> </p>
                         <p> 
                         <div class="row">
                             <div class="col-md-3">Solusi : </div>
                             <div class="col-md-9"> {{$laporan->solusi}}</div>
                         </div>
                         <br></p>
-                        <p>
-                        <div class="row">
-                            <div class="col-md-3">Rencana : </div>
-                            <div class="col-md-9">{{$laporan->rencana}}</div>
-                        </div>
-                        <br> </p>
-                        <p>
-                        <div class="row">
-                            <div class="col-md-3">Inisatif : </div>
-                            <div class="col-md-9">{{$laporan->inisiatif_tambahan}}</div>
-                        </div>
-                        <br> </p>
-                        <p>
-                        <div class="row">
-                            <div class="col-md-3">Catatan : </div>
-                            <div class="col-md-9">{{$laporan->catatan}}</div>
-                        </div>
-                       <br> </p>
+                        
                     </div>
                 </div>
             </div>

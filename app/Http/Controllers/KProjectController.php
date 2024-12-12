@@ -120,7 +120,6 @@ public function update(Request $request, $id)
         'kode_uk' => 'required|string',
         'divisi' => 'required|string',
         'unit_kerja' => 'required|string',
-        'gaji' => 'required|integer',
         'start' => 'required|date',
         'end' => 'required|date',
         'kapro' => 'required', // Ensure the selected ketua project exists in the users table
@@ -138,7 +137,6 @@ public function update(Request $request, $id)
     $project->divisi = $request->divisi;
     $project->start = $request->start;
     $project->end = $request->end;
-    $project->gaji = $request->gaji;
     $project->kapro_id = $request->kapro;
     
     // Save the changes to the database

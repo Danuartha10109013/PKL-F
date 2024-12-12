@@ -75,11 +75,11 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Full Name</div>
-                    <input type="text" class="form-control" name="name" value="{{$data->name}}">
+                    <input type="text" class="form-control"  name="name" value="{{$data->name}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">No KTP</div>
-                    <input type="text" class="form-control" name="no_ktp" value="{{$data->no_ktp}}">
+                    <input type="number" class="form-control" placeholder="ex. 3213140011220001" name="no_ktp" value="{{$data->no_ktp}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Nomor Pegawai</div>
@@ -100,11 +100,15 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Gender</div>
-                    <input type="text" class="form-control" name="gender" value="{{$data->gender}}">
+                    <select type="text" class="form-control" name="gender" value="{{$data->gender}}">
+                      <option value="" selected disabled>--Pilih Jenis Gender--</option>
+                      <option value="Laki-Laki">Laki-Laki</option>
+                      <option value="Perempuan">Perempuan</option>
+                    </select>
                   </div>
                   <div class="col-md">
                     <div class="form-label">Tempat Lahir</div>
-                    <input type="text" class="form-control" name="tempat_lahir" value="{{$data->tempat_lahir}}">
+                    <input type="text" class="form-control" placeholder="ex. Jakarta" name="tempat_lahir" value="{{$data->tempat_lahir}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Tanggal Lahir</div>
@@ -116,11 +120,11 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Phone</div>
-                    <input type="text" class="form-control" name="phone" value="{{$data->phone}}">
+                    <input type="text" class="form-control" placeholder="ex. 082100001111" name="phone" value="{{$data->phone}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Personal Number</div>
-                    <input type="text" class="form-control" name="personel_number" value="{{$data->personel_number}}">
+                    <input type="text" class="form-control" placeholder="ex. 082100001111" name="personel_number" value="{{$data->personel_number}}">
                   </div>
                   
                 </div>
@@ -129,38 +133,38 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Alamat</div>
-                    <input type="text" class="form-control" name="alamat" value="{{$data->alamat}}">
+                    <input type="text" class="form-control" placeholder="ex. jl. Hj. Juanda No.15 " name="alamat" value="{{$data->alamat}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">RT</div>
-                    <input type="text" class="form-control" name="rt" value="{{$data->rt}}">
+                    <input type="text" class="form-control" placeholder="ex. 001" name="rt" value="{{$data->rt}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">RW</div>
-                    <input type="text" class="form-control" name="rw" value="{{$data->rw}}">
+                    <input type="text" class="form-control" placeholder="ex. 001" name="rw" value="{{$data->rw}}">
                   </div>
                 </div>
 
                 <div class="row g-3 mt-3">
                   <div class="col-md">
                     <div class="form-label">Kelurahan</div>
-                    <input type="text" class="form-control" name="kelurahan" value="{{$data->kelurahan}}">
+                    <input type="text" class="form-control" placeholder="ex. Sunter Jaya" name="kelurahan" value="{{$data->kelurahan}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Kecamatan</div>
-                    <input type="text" class="form-control" name="kecamatan" value="{{$data->kecamatan}}">
+                    <input type="text" class="form-control" placeholder="ex. Tanjung Priuk" name="kecamatan" value="{{$data->kecamatan}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Kota</div>
-                    <input type="text" class="form-control" name="kota" value="{{$data->kota}}">
+                    <input type="text" class="form-control" placeholder="ex. Jakarta Utara" name="kota" value="{{$data->kota}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Provinsi</div>
-                    <input type="text" class="form-control" name="provinsi" value="{{$data->provinsi}}">
+                    <input type="text" class="form-control" placeholder="ex. D.K.I Jakarta" name="provinsi" value="{{$data->provinsi}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Kode Pos</div>
-                    <input type="text" class="form-control" name="kode_pos" value="{{$data->kode_pos}}">
+                    <input type="text" class="form-control" placeholder="ex. 14350" name="kode_pos" value="{{$data->kode_pos}}">
                   </div>
                 </div>
 
@@ -168,19 +172,19 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">No BPJS</div>
-                    <input type="text" class="form-control" name="no_bpjs" value="{{$data->no_bpjs}}">
+                    <input type="number" class="form-control" placeholder="ex. 0000 1111 2222 3333" name="no_bpjs" value="{{$data->no_bpjs}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">No BPJSTK</div>
-                    <input type="text" class="form-control" name="no_bpjstk" value="{{$data->no_bpjstk}}">
+                    <input type="number" class="form-control" placeholder="ex. 0000 1111 2222 3333" name="no_bpjstk" value="{{$data->no_bpjstk}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Lokasi BPJS</div>
-                    <input type="text" class="form-control" name="lokasi_bpjs" value="{{$data->lokasi_bpjs}}">
+                    <input type="text" class="form-control" placeholder="ex. Jakarta" name="lokasi_bpjs" value="{{$data->lokasi_bpjs}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Terdaftar BPJSTK</div>
-                    <input type="text" class="form-control" name="terdaftar_bpjstk" value="{{$data->terdaftar_bpjstk}}">
+                    <input type="text" class="form-control"  name="terdaftar_bpjstk" value="{{$data->terdaftar_bpjstk}}">
                   </div>
                 </div>
 
@@ -188,19 +192,19 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Agama</div>
-                    <input type="text" class="form-control" name="agama" value="{{$data->agama}}">
+                    <input type="text" class="form-control" placeholder="ex. Islam" name="agama" value="{{$data->agama}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Status Kawin</div>
-                    <input type="text" class="form-control" name="kawin" value="{{$data->kawin}}">
+                    <input type="text" class="form-control" placeholder="ex. Sudah Kawin" name="kawin" value="{{$data->kawin}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">Tanggungan</div>
-                    <input type="text" class="form-control" name="tanggungan" value="{{$data->tanggungan}}">
+                    <input type="number" class="form-control" placeholder="ex. 3" name="tanggungan" value="{{$data->tanggungan}}">
                   </div>
                   <div class="col-md">
                     <div class="form-label">NPWP</div>
-                    <input type="text" class="form-control" name="npwp" value="{{$data->npwp}}">
+                    <input type="text" class="form-control" placeholder="ex. 01.222.333.4-555.666" name="npwp" value="{{$data->npwp}}">
                   </div>
                 </div>
 

@@ -36,4 +36,9 @@ class KKontrakController extends Controller
         return Excel::download(new ExportKontrakExcel, $date . '_Kontrak.xlsx');
     }
 
+    public function show($id){
+        $data = KontrakM::find($id);
+        return view('pages.hc.kelolakontrak.show',compact('data'));
+    }
+
 }

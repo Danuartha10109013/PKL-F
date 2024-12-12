@@ -46,15 +46,16 @@
                                     </div>
                                 </div>
 
+                               
+                            </div>
+
+                            <div class="col-md-6">
                                 <div class="row mb-3">
                                     <div class="col-md-3">Kendala :</div>
                                     <div class="col-md-9">
                                         <textarea name="kendala" class="form-control">{{ old('kendala', $laporan->kendala) }}</textarea>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-6">
                                 <div class="row mb-3">
                                     <div class="col-md-3">Solusi :</div>
                                     <div class="col-md-9">
@@ -62,26 +63,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-3">Rencana :</div>
-                                    <div class="col-md-9">
-                                        <textarea name="rencana" class="form-control">{{ old('rencana', $laporan->rencana) }}</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-3">Inisatif :</div>
-                                    <div class="col-md-9">
-                                        <textarea name="inisiatif_tambahan" class="form-control">{{ old('inisiatif_tambahan', $laporan->inisiatif_tambahan) }}</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-3">Catatan :</div>
-                                    <div class="col-md-9">
-                                        <textarea name="catatan" class="form-control">{{ old('catatan', $laporan->catatan) }}</textarea>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
 
