@@ -75,8 +75,6 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
             Route::get('/laporan/kapro/karpo/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.ketua.project');
             Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
-
-
         });
         //K Gaji
         Route::prefix('k-gaji')->group(function () {
@@ -86,6 +84,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[KKontrakController::class,'index'])->name('kelola-kontrak');
             Route::get('/export',[KKontrakController::class,'export'])->name('kelola-kontrak.export');
             Route::get('/show/{id}',[KKontrakController::class,'show'])->name('kelola-kontrak.show');
+            Route::get('/print/{id}',[KKontrakController::class,'print'])->name('kelola-kontrak.print');
         });
     });
 

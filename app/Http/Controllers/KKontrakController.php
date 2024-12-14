@@ -40,5 +40,9 @@ class KKontrakController extends Controller
         $data = KontrakM::find($id);
         return view('pages.hc.kelolakontrak.show',compact('data'));
     }
+    public function print($id){
+        $data = KontrakM::find($id);
+        return view('pages.hc.kelolakontrak.print',compact('data'));
+    }
 
 }

@@ -16,6 +16,9 @@ Kelola Kontrak || Human Capital
           Detail Kontrak
         </h2>
       </div>
+      <div class="col text-end">
+        <a href="{{route('hc.kelola-kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
+      </div>
       <div class="card">
         <div class="container mt-3">
             <img src="{{asset('logo_wika.png')}}" width="10%" alt="">
@@ -26,6 +29,43 @@ Kelola Kontrak || Human Capital
                 <hr style="outline: 5px black">
                 <h2>DETAIL KONTRAK</h2>
             </center>
+            <div class="container">
+              <p>Nomor : {{$data->id}}/KONTRAK/WIKA/{{$data->created_at->format('Y')}}</p>
+
+            <h3>
+              PIHAK PERTAMA
+            </h3>
+            <p>
+              Nama Perusahaan : PT WIJAYA KARYA PERSERO TBK <br>
+              Alamat : Jl. DI. Panjaitan No.Kav. 9-10, RT.1/RW.11, Cipinang Cempedak, Kecamatan Jatinegara, <br>
+              Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13340 <br>
+              Nama Penanggung Jawab : [Nama Penanggung Jawab] <br>
+              Jabatan : [Jabatan Penanggung Jawab] <br>
+            </p>
+
+            <h3>
+              PIHAK KEDUA 
+            </h3>
+            @php
+              $user = \App\Models\User::find($data->user_id);
+              // dd($user);
+            @endphp
+            <p>
+              Nama : {{$user->name}} <br>
+              Nomor Identitas: {{$user->no_ktp}} <br>
+              Alamat : {{$user->alamat}} Rt. {{$user->rt}} Rw. {{$user->rw}} Kel. {{$user->kelurahan}} Kec. {{$user->kecamatan}} Kota {{$user->kota}} Prov. {{$user->provinsi}} Kode Pos {{$user->kode_pos}}
+            </p>
+
+            <p>
+              Dengan ini menyatakan bahwa <strong> PIHAK KEDUA bekerja di PT WIJAYA KARYA </strong> dengan masa kerja <br> sebagai berikut: <br>
+              <ul>
+                <li><strong>Tanggal Mulai</strong>: {{$data->awal_kontrak}}</li>
+                <li><strong>Tanggal Berakhir</strong>: {{$data->akhir_kontrak}}</li>
+              </ul>
+              Demikian surat ini dibuat dengan sebenar-benarnya untuk dijadikan dokumen resmi dan dipahami oleh kedua belah pihak.
+            </p>
+            </div>
+            
 
         </div>
       </div>
