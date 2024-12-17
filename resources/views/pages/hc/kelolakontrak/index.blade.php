@@ -133,7 +133,12 @@ Kelola Kontrak || Human Capital
                   @endif
 
                 @endif
+                @if (Auth::user()->role == 0)
                 <a href="{{route('hc.kelola-kontrak.show',$d->id)}}" class="btn btn-primary"><i class=""></i>Show</a>
+                @elseif (Auth::user()->role == 3)
+                <a href="{{route('manajerhc.kontrak.show',$d->id)}}" class="btn btn-primary"><i class=""></i>Show</a>
+                  
+                @endif
               </td>
             </tr>
             @endforeach

@@ -3,8 +3,6 @@
 Dashboard || Kepala seksi kesejahteraan aparatur
 @endsection
 @section('content')
-
-<!-- Page header -->
 <div class="page-header d-print-none">
   <div class="container-xl">
     <div class="row g-2 align-items-center">
@@ -58,10 +56,10 @@ Dashboard || Kepala seksi kesejahteraan aparatur
       <div class="col-sm-6 col-lg-3">
         <div class="card">
           <div class="card-body">
-              <div class="subheader">Total Ketua Project</div>
+              <div class="subheader">Total Human Capital</div>
               @php
                   $pegawai = \App\Models\User::where('role',1)->count();
-                  $kapro = \App\Models\User::where('role',2)->count();
+                  $kapro = \App\Models\User::where('role',0)->count();
                   $project = \App\Models\ProjectM::all()->count();
               @endphp
               <div class="h1 ">{{$kapro}}</div>
@@ -74,7 +72,7 @@ Dashboard || Kepala seksi kesejahteraan aparatur
       <div class="col-sm-6 col-lg-3">
         <div class="card">
           <div class="card-body">
-              <div class="subheader">Total Project Done</div>
+              <div class="subheader">Your Project Done</div>
               @php
                   $projectin = \App\Models\ProjectM::where('kapro_id',Auth::user()->id)->where('status',2)->count();
               @endphp
@@ -83,8 +81,126 @@ Dashboard || Kepala seksi kesejahteraan aparatur
           <!-- Replace with an image that's related to employees, like a team icon or office environment -->
           <img src="{{asset('done.png')}}" alt="Employee Icon" class="img-fluid mx-auto d-block mb-2" style="width: 100px; height: auto;">
       </div>
-      
+    </div>
+
+      <!-- Chart User -->
+      <div class="col-6">
+          <div class="card">
+              <div class="card-body">
+                  <div class="subheader text-center">Tren User</div>
+                  @php
+                      $t_hc = \App\Models\User::where('role', 0)->count();
+                      $t_pegawai = \App\Models\User::where('role', 1)->count();
+                      $t_kasieka = \App\Models\User::where('role', 2)->count();
+                      $t_manajerhc = \App\Models\User::where('role', 3)->count();
+                  @endphp
+  
+                  <!-- Wrapper untuk posisi center -->
+                  <div class="d-flex justify-content-center align-items-center">
+                      <canvas id="userPieChart" class="pie-chart" width="400" height="400"></canvas>
+                  </div>
+              </div>
+          </div>
       </div>
+  
+      <!-- Chart Project -->
+      <div class="col-6">
+          <div class="card">
+              <div class="card-body">
+                  <div class="subheader text-center">Tren Project</div>
+                  @php
+                      $p_done = \App\Models\ProjectM::where('kapro_id',Auth::user()->id)->where('status', 2)->count();
+                      $p_nonactive = \App\Models\ProjectM::where('kapro_id',Auth::user()->id)->where('status', 0)->count();
+                      $p_pemeliharaan = \App\Models\ProjectM::where('kapro_id',Auth::user()->id)->where('status', 5)->count();
+                      $p_active = \App\Models\ProjectM::where('kapro_id',Auth::user()->id)->where('status', 1)->count();
+                  @endphp
+  
+                  <div class="d-flex justify-content-center align-items-center">
+                      <canvas id="projectPieChart" class="pie-chart" width="400" height="400"></canvas>
+                  </div>
+              </div>
+          </div>
+      </div>
+  
+  <!-- Tambahkan Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+      // User Pie Chart
+      const userCtx = document.getElementById('userPieChart').getContext('2d');
+      const userPieChart = new Chart(userCtx, {
+          type: 'pie',
+          data: {
+              labels: ['Human Capital', 'Pegawai', 'Kasieka', 'Manajer HC'],
+              datasets: [{
+                  label: 'User Roles',
+                  data: [{{$t_hc}}, {{$t_pegawai}}, {{$t_kasieka}}, {{$t_manajerhc}}],
+                  backgroundColor: [
+                      '#007bff', // Human Capital - Blue
+                      '#28a745', // Pegawai - Green
+                      '#ffc107', // Kasieka - Yellow
+                      '#dc3545'  // Manajer HC - Red
+                  ],
+                  borderColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: false,
+              plugins: {
+                  legend: {
+                      position: 'top'
+                  },
+                  tooltip: {
+                      callbacks: {
+                          label: function(context) {
+                              const value = context.raw || 0;
+                              return `${context.label}: ${value} users`;
+                          }
+                      }
+                  }
+              }
+          }
+      });
+  
+      // Project Pie Chart
+      const projectCtx = document.getElementById('projectPieChart').getContext('2d');
+      const projectPieChart = new Chart(projectCtx, {
+          type: 'pie',
+          data: {
+              labels: ['Done', 'Non-Active', 'Pemeliharaan', 'Active'],
+              datasets: [{
+                  label: 'Projects',
+                  data: [{{$p_done}}, {{$p_nonactive}}, {{$p_pemeliharaan}}, {{$p_active}}],
+                  backgroundColor: [
+                      '#28a745', // Done - Green
+                      '#6c757d', // Non-Active - Gray
+                      '#ffc107', // Pemeliharaan - Yellow
+                      '#007bff'  // Active - Blue
+                  ],
+                  borderColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff'],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: false,
+              plugins: {
+                  legend: {
+                      position: 'top'
+                  },
+                  tooltip: {
+                      callbacks: {
+                          label: function(context) {
+                              const value = context.raw || 0;
+                              return `${context.label}: ${value} projects`;
+                          }
+                      }
+                  }
+              }
+          }
+      });
+  </script>
+  
+    
       
       <div class="col-12">
         <div class="card card-md">

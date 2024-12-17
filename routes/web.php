@@ -103,6 +103,8 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::prefix('kontrak')->group(function () {
             Route::get('/',[KKontrakController::class,'index'])->name('kontrak');
             Route::get('/export',[KKontrakController::class,'export'])->name('kontrak.export');
+            Route::get('/show/{id}',[KKontrakController::class,'show'])->name('kontrak.show');
+            Route::get('/print/{id}',[KKontrakController::class,'print'])->name('kontrak.print');
 
             
         });

@@ -17,7 +17,11 @@ Kelola Kontrak || Human Capital
         </h2>
       </div>
       <div class="col text-end">
+        @if (Auth::user()->role == 0)
         <a href="{{route('hc.kelola-kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
+        @elseif (Auth::user()->role == 3)
+        <a href="{{route('manajerhc.kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
+        @endif
       </div>
       <div class="card">
         <div class="container mt-3">
@@ -40,7 +44,7 @@ Kelola Kontrak || Human Capital
               Alamat : Jl. DI. Panjaitan No.Kav. 9-10, RT.1/RW.11, Cipinang Cempedak, Kecamatan Jatinegara, <br>
               Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13340 <br>
               Nama Penanggung Jawab : [Nama Penanggung Jawab] <br>
-              Jabatan : [Jabatan Penanggung Jawab] <br>
+              Jabatan : Senior Vice President  Infrastructure 1 Division <br>
             </p>
 
             <h3>

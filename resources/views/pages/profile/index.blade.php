@@ -228,9 +228,20 @@ Dashboard || Pegawai
                   </div>
                 </div>
 
-                <h3 class="card-title mt-4">Password</h3>
-                <div>
-                  <input class="form-control" type="password" name="password" placeholder="New Password here ..">
+                <div class="row">
+                  <div class="col-6">
+
+                    <h3 class="card-title mt-4">Password</h3>
+                    <div>
+                      <input class="form-control" type="password" name="password" placeholder="New Password here ..">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <h3 class="card-title mt-4">Password Confirmation</h3>
+                    <div>
+                      <input class="form-control" type="password" name="password_confirmation" placeholder="New Password here ..">
+                    </div>
+                  </div>
                 </div>
 
                 <input type="hidden" value="{{$data->id}}" name="user_id">

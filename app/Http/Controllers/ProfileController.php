@@ -47,6 +47,7 @@ class ProfileController extends Controller
         'no_bpjstk' => 'nullable|string|max:20',
         'terdaftar_bpjstk' => 'nullable|string|max:20',
         'lokasi_bpjs' => 'nullable|string|max:20',
+        'password_confirmation' => 'nullable|string|max:20',
         'password' => 'nullable|string|min:8|confirmed', // Optional if password is changed
     ]);
 
