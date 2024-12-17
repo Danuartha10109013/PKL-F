@@ -115,17 +115,19 @@ class ProjectController extends Controller
         $data->status = 2;
         $data->save();
         $user = json_decode($data->pegawai_id);
+        // dd($user);
         foreach ($user as $u){
             $laporan = new LaporanM();
             $laporan->project_id = $data->id;
-            $laporan->user_id = $u;
+            $laporan->user_id = (int) $u; // Konversi ke integer
             $laporan->save();
         }
+        
 
         $laporankapro = new LaporanM();
         $laporankapro->project_id = $data->id;
-        $laporan->user_id = $data->kapro_id;
-        $laporan->save();
+        $laporankapro->user_id = $data->kapro_id;
+        $laporankapro->save();
 
         return redirect()->back()->with('success','Project telah selesai');
 

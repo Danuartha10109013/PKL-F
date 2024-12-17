@@ -215,6 +215,7 @@ Detail Project || {{$data->judul}}
                       if (is_array($pegawai_ids) && count($pegawai_ids) > 0) {
                           // Retrieve users involved using whereIn to handle array of IDs
                           $user_terlibat = \App\Models\User::whereIn('id', $pegawai_ids)->get();
+                          // dd($user_terlibat);
                       } else {
                           $user_terlibat = collect(); // Use empty collection if no users are involved
                       }

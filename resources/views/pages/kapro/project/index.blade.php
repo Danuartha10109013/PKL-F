@@ -180,10 +180,7 @@ Kelola Project || Kepala seksi kesejahteraan aparatur
                                                     <input type="text" class="form-control" name="unit_kerja" value="{{ old('unit_kerja', $d->unit_kerja) }}">
                                                 </div>
                     
-                                                <div class="mb-3">
-                                                    <label class="form-label">Gaji</label>
-                                                    <input type="number" class="form-control" name="gaji" value="{{ old('gaji', $d->gaji) }}">
-                                                </div>
+                                               
                     
                                                 <div class="mb-3">
                                                     <label class="form-label">Start Date</label>

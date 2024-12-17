@@ -10,16 +10,27 @@ use Illuminate\Support\Facades\Auth;
 
 class PegawaiController extends Controller
 {
-    public function project(){
+    public function project( Request $request){
         $userId = Auth::user()->id;
-
+        $search = $request->search;
+        // dd($search);
         // Mencari data di mana pegawai_id mengandung ID user aktif
-        $data = ProjectM::where('pegawai_id', 'LIKE', '%"'.$userId.'"%')
-            ->orWhere('pegawai_id', 'LIKE', '%,'.$userId.',%')
-            ->orWhere('pegawai_id', 'LIKE', $userId.',%')
-            ->orWhere('pegawai_id', 'LIKE', '%,'.$userId)
-            ->orWhere('pegawai_id', '=', $userId)
-            ->get();
+        if($search){
+            $data = ProjectM::where('pegawai_id', 'LIKE', '%"'.$userId.'"%')
+                ->orWhere('pegawai_id', 'LIKE', '%,'.$userId.',%')
+                ->orWhere('pegawai_id', 'LIKE', $userId.',%')
+                ->orWhere('pegawai_id', 'LIKE', '%,'.$userId)
+                ->orWhere('pegawai_id', '=', $userId)
+                ->orWhere('judul', 'LIKE', '%,'.$search)
+                ->get();
+        }else{
+            $data = ProjectM::where('pegawai_id', 'LIKE', '%"'.$userId.'"%')
+                ->orWhere('pegawai_id', 'LIKE', '%,'.$userId.',%')
+                ->orWhere('pegawai_id', 'LIKE', $userId.',%')
+                ->orWhere('pegawai_id', 'LIKE', '%,'.$userId)
+                ->orWhere('pegawai_id', '=', $userId)
+                ->get();
+        }
         // dd($data);
         return view('pages.pegawai.project.index',compact('data'));
     }

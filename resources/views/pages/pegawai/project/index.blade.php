@@ -21,7 +21,7 @@ Project || Pegawai
           <div class="btn-list">
             <span class="d-none d-sm-inline">
            <!-- Search Form -->
-            <form action="{{ route('hc.kelola-project') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
+            <form action="{{ route('pegawai.project') }}" method="GET" class="d-flex justify-content-center mb-0 position-relative">
               <input type="text" id="searchInput" name="search" class="form-control w-100" 
                     placeholder="Search project..." value="{{ request()->query('search') }}">
               <!-- Clear 'X' Button outside the input -->
