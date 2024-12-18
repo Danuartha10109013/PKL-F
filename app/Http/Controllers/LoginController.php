@@ -29,8 +29,13 @@ class LoginController extends Controller
         if (Auth::attempt($data)) {
             $user = Auth::user();
             
+            if ($user->deleteing == 1) {
+                Auth::logout();
+                return redirect()->route('auth.login')->with('error', 'Your Account was deleted');
+            }
             // Cek peran pengguna setelah login berhasil
             if ($user->active == 0) {
+                Auth::logout();
                 return redirect()->route('auth.login')->with('error', 'Your Account was inactive, contact your admin');
             }
         

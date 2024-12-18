@@ -14,44 +14,56 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class KUserController extends Controller
 {
-    public function index(Request $request){
-        //search
-        $search = $request->input('search');
+    public function index(Request $request)
+{
+    // Search
+    $search = $request->input('search');
 
-        // Modify the query to include search functionality
-        $hasil = User::when($search, function ($query, $search) {
-            return $query->where('name', 'like', '%' . $search . '%')  
-                        ->orWhere('email', 'like', '%' . $search . '%')  
-                        ->orWhere('no_pegawai', 'like', '%' . $search . '%'); 
-        })->paginate(10);
+    // Search functionality
+    $hasil = User::where('deleteing', 0) // Pastikan deleteing = 0 dulu
+    ->when($search, function ($query, $search) {
+        return $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('email', 'like', '%' . $search . '%')
+              ->orWhere('no_pegawai', 'like', '%' . $search . '%');
+        });
+    })
+    ->paginate(10);
 
-        $lastUser = User::orderBy('no_pegawai', 'desc')->first();
 
-        if ($lastUser && preg_match('/^EMP(\d+)$/', $lastUser->no_pegawai, $matches)) {
-            // Increment the number
-            $newNoPegawai = 'EMP' . str_pad($matches[1] + 1, 3, '0', STR_PAD_LEFT);
-        } else {
-            // If no users exist, start with EMP001
-            $newNoPegawai = 'EMP001';
-        }
-        if(Auth::user()->role == 2) {
-            $data = User::where('project_id', $newNoPegawai)->paginate(10);
-            // $data = User::paginate(10);
-        }else{
-            $data = User::paginate(10);
-        }
-        $count = User::all()->count();
-        $countpegawai = User::where('role',1)->count();
-        $counthc = User::where('role',0)->count();
-        $countmhc = User::where('role',3)->count();
-        $countkapro = User::where('role',2)->count();
-        $countpusat = User::where('role',4)->count();
-        if(Auth::user()->role == 0){
-            return view('pages.hc.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
-        }else{
-            return view('pages.kapro.kelolauser.index',compact('data','count','countpegawai','counthc','countmhc','countkapro','newNoPegawai','hasil','countpusat'));
-        }
+    // Generate the next employee number
+    $lastUser = User::orderBy('no_pegawai', 'desc')->first();
+    if ($lastUser && preg_match('/^EMP(\d+)$/', $lastUser->no_pegawai, $matches)) {
+        $newNoPegawai = 'EMP' . str_pad($matches[1] + 1, 3, '0', STR_PAD_LEFT);
+    } else {
+        $newNoPegawai = 'EMP001';
     }
+
+    // dd($hasil);
+
+    // Data based on role
+    if (Auth::user()->role == 2) {
+        $data = User::where('project_id', $newNoPegawai)->whereNot('deleteing', 1)->paginate(10);
+    } else {
+        $data = User::whereNot('deleteing', 1)->paginate(10);
+    }
+
+    // Count various roles
+    $count = User::whereNot('deleteing', 1)->count();
+    $countpegawai = User::whereNot('deleteing', 1)->where('role', 1)->count();
+    $counthc = User::whereNot('deleteing', 1)->where('role', 0)->count();
+    $countmhc = User::whereNot('deleteing', 1)->where('role', 3)->count();
+    $countkapro = User::whereNot('deleteing', 1)->where('role', 2)->count();
+    $countpusat = User::whereNot('deleteing', 1)->where('role', 4)->count();
+
+    // View rendering
+    if (Auth::user()->role == 0) {
+        return view('pages.hc.kelolauser.index', compact('data', 'count', 'countpegawai', 'counthc', 'countmhc', 'countkapro', 'newNoPegawai', 'hasil', 'countpusat'));
+    } else {
+        return view('pages.kapro.kelolauser.index', compact('data', 'count', 'countpegawai', 'counthc', 'countmhc', 'countkapro', 'newNoPegawai', 'hasil', 'countpusat'));
+    }
+}
+
 
     public function store(Request $request)
     {
@@ -78,6 +90,7 @@ class KUserController extends Controller
         // Create the user
         $user = new User();
         $user->no_pegawai = $request->no_pegawai;
+        $user->deleteing = 0;
         $user->name = $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
@@ -168,7 +181,9 @@ public function delete($id)
     $item = User::find($id);
 
     if ($item) {
-        $item->delete();
+        $item->active = 0;
+        $item->deleteing = 1;
+        $item->save();
         return redirect()->back()->with('success', 'Item deleted successfully.');
     }
 

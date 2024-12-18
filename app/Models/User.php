@@ -48,6 +48,7 @@ class User extends Authenticatable
         'password',
         'profile',
         'role',
+        'deleteing',
     ];
 
     /**
