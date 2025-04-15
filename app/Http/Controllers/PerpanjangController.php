@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HistoryPerpanjanganM;
 use App\Models\KontrakM;
 use App\Models\PenilaianM;
 use App\Models\ProjectM;
@@ -83,7 +84,8 @@ class PerpanjangController extends Controller
                 'projects' => $item['projects'],
             ];
         });
-    
+
+        
         return view('pages.manajerhc.perpnajang.index', compact('data'));
     }
     

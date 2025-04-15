@@ -59,6 +59,16 @@
       </a>
     </li>
 
+    <li class="nav-item {{ Route::currentRouteName() == 'manajerhc.history-kontrak' ? 'active' : '' }}">
+      <a class="nav-link" href="{{route('manajerhc.history-kontrak')}}">
+        <span class="nav-link-icon d-md-none d-lg-inline-block">
+          <i class="ti ti-history"></i>
+        </span>
+        <span class="nav-link-title">
+         Laporan Perpanjangan Kontrak
+        </span>
+      </a>
+    </li>
     <li class="nav-item {{ Route::currentRouteName() == 'manajerhc.perpanjang' ? 'active' : '' }}">
       <a class="nav-link" href="{{route('manajerhc.perpanjang')}}">
         <span class="nav-link-icon d-md-none d-lg-inline-block">

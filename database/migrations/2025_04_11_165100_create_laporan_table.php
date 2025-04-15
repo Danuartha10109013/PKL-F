@@ -1,19 +1,16 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateLaporanTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('laporan_m_s', function (Blueprint $table) {
-            $table->id();
-            $table->string('project_id');
+        Schema::create('laporan', function (Blueprint $table) {
+            $table->id(); // bigint unsigned primary key
+            $table->string('project_id'); // varchar(255)
+            $table->integer('user_id'); // int(11)
             $table->string('pencapaian')->nullable();
             $table->text('ringkasan')->nullable();
             $table->string('hasil')->nullable();
@@ -22,15 +19,12 @@ return new class extends Migration
             $table->string('rencana')->nullable();
             $table->string('inisiatif_tambahan')->nullable();
             $table->string('catatan')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // created_at & updated_at
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('laporan_m_s');
+        Schema::dropIfExists('laporan');
     }
-};
+}

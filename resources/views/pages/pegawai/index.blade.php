@@ -24,6 +24,56 @@ Dashboard || Pegawai
 <!-- Page body -->
 <div class="page-body">
 <div class="container-xl">
+  
+  @php
+    $user = Auth::user();
+
+    $requiredFields = [
+        'personel_number', 'posisi', 'tempat_lahir', 'tanggal_lahir', 'no_ktp',
+        'kawin', 'phone', 'agama', 'tanggungan', 'npwp', 'alamat', 'rt', 'rw',
+        'kelurahan', 'kecamatan', 'kota', 'provinsi', 'kode_pos', 'no_bpjs',
+        'no_bpjstk', 'lokasi_bpjs', 'terdaftar_bpjstk', 'gender'
+    ];
+
+    $incomplete = false;
+    $missingFields = [];
+
+    foreach ($requiredFields as $field) {
+        $value = $user->$field ?? null;
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
+            $incomplete = true;
+            $missingFields[] = $field;
+        }
+    }
+  @endphp
+
+@if ($incomplete)
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="alert alert-warning d-flex align-items-center justify-content-between p-3 rounded shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-4 text-warning"></i>
+                <div>
+                    <strong>Profile Incomplete</strong><br>
+                    Beberapa data pribadi kamu belum lengkap:
+                    <ul class="mb-1 mt-1">
+                        @foreach ($missingFields as $field)
+                            <li>{{ ucfirst(str_replace('_', ' ', $field)) }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            <a href="{{ route('profile', $user->id) }}" class="btn btn-sm btn-warning ms-3">
+                <i class="bi bi-pencil-square me-1"></i> Lengkapi Profil
+            </a>
+        </div>
+      </div>
+    </div>
+@endif
+
+
+
+
     <div class="row row-deck row-cards">
       <div class="col-sm-6 col-lg-3">
         <div class="card">

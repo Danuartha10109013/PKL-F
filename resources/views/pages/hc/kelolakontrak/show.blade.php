@@ -21,6 +21,8 @@ Kelola Kontrak || Human Capital
         <a href="{{route('hc.kelola-kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
         @elseif (Auth::user()->role == 3)
         <a href="{{route('manajerhc.kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
+        @elseif (Auth::user()->role == 1)
+        <a href="{{route('pegawai.kontrak.print',$data->id)}}" class="btn btn-warning"><i class="ti ti-printer"></i></a>
         @endif
       </div>
       <div class="card">

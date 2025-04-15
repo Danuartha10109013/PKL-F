@@ -42,6 +42,8 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('kontrak')->group(function () {
             Route::get('/', [PegawaiController::class, 'kontrak'])->name('kontrak'); 
+            Route::get('/show/{id}', [PegawaiController::class, 'kontrak_show'])->name('kontrak.show'); 
+            Route::get('/print/{id}',[KKontrakController::class,'print'])->name('kontrak.print');
         });
 
     });
@@ -54,7 +56,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         // Manage Employees
         Route::prefix('k-user')->group(function () {
             Route::get('/',[KUserController::class,'index'])->name('kelola-user');
-            Route::get('/add',[KUserController::class,'add'])->name('kelola-user.add');
+            // Route::get('/add',[KUserController::class,'add'])->name('kelola-user.add');
             Route::post('/store',[KUserController::class,'store'])->name('kelola-user.store');
             Route::get('/active/{id}',[KUserController::class,'active'])->name('kelola-user.active');
             Route::get('/nonactive/{id}',[KUserController::class,'nonactive'])->name('kelola-user.nonactive');
@@ -108,6 +110,11 @@ Route::middleware([AutoLogout::class])->group(function () {
 
             
         });
+        Route::prefix('history-kontrak')->group(function () {
+            Route::get('/',[ManajerHcController::class,'history'])->name('history-kontrak');
+
+        });
+
         Route::prefix('perpanjang')->group(function () {
             Route::get('/',[PerpanjangController::class,'index'])->name('perpanjang');
             Route::post('/perpanjang/{id}',[KUserController::class,'perpanjang'])->name('perpanjang.post');
@@ -150,4 +157,8 @@ Route::middleware([AutoLogout::class])->group(function () {
         
     });
     
+});
+
+Route::fallback(function () {
+    abort(404);
 });

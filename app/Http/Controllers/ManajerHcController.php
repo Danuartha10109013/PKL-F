@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HistoryPerpanjanganM;
 use App\Models\LaporanM;
 use App\Models\PenilaianM;
 use App\Models\ProjectM;
@@ -60,5 +61,11 @@ class ManajerHcController extends Controller
         $laporan = LaporanM::find($ids);
         // dd($ids);
         return view('pages.kapro.project.laporan',compact('laporan','project'));
+    }
+
+    public function history(){
+        $data = HistoryPerpanjanganM::orderBy('created_at','desc')->get();
+        
+        return view('pages.manajerhc.history.index',compact('data'));
     }
 }

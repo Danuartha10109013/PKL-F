@@ -79,7 +79,7 @@
         <tr>
             <th >Unit Kerja</th>
             <td> : </td>
-            <td>{{ $data->kode_uk }}</td>
+            <td>{{ $data->unit_kerja }}</td>
         </tr>
         <tr>
             @php

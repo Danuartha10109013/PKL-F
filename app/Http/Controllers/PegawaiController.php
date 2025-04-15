@@ -87,4 +87,9 @@ class PegawaiController extends Controller
         $data = ProjectM::find($id);
         return view('pages.pegawai.project.detail',compact('data'));
     }
+
+    public function kontrak_show($id){
+        $data = KontrakM::find($id);
+        return view('pages.hc.kelolakontrak.show',compact('data'));
+    }
 }

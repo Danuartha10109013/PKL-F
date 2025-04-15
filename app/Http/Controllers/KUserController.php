@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\UserExportExcel;
+use App\Models\HistoryPerpanjanganM;
 use App\Models\KontrakM;
 use App\Models\LaporanM;
 use App\Models\ProjectM;
@@ -196,6 +197,14 @@ public function perpanjang(Request $request,$id){
     $data->akhir_kontrak = $request->end_date;
     $data->periode = $data->periode + 1;
     $data->save();
+
+    $history = new HistoryPerpanjanganM();
+    $history->user_id = $data->user_id;
+    $history->jumlah_perpanjangan = $data->periode + 1;
+    $history->awal = $request->start_date;
+    $history->akhir = $request->end_date;
+    $history->tanggal_perpanjangan = now()->format('Y-m-d');
+    $history->save();
 
     return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
 }

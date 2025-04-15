@@ -42,12 +42,15 @@ Kontrak || Pegawai
     <div class="container-xl">
         <div class="card">
             <div class="card-body">
-                <h4>Kontrak : {{ Auth::user()->name }}</h4>
-                <img src="{{ asset('storage/' . Auth::user()->profile) }}" width="5%" alt="">
-                <br>
-                <p class="mt-4">Detail kontrak</p>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <h4>Kontrak : {{ Auth::user()->name }}</h4>
+                        <img src="{{ asset('storage/' . Auth::user()->profile) }}" width="20%" alt="">
+                    </div>
+                
+                    <div class="col-md-4">
+                        <p class="mt-4"><strong>Detail kontrak</strong></p>
+
                         <p><strong>Awal Kontrak:</strong> {{ $data->awal_kontrak }}</p>
                         <p><strong>Durasi:</strong> 
                             @php
@@ -62,7 +65,11 @@ Kontrak || Pegawai
                             @endif
                         </p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <a href="{{ route('pegawai.kontrak.show', $data->id) }}" class="btn btn-primary mb-3">
+                            Show Kontrak
+                        </a>
+                        
                         <p><strong>Akhir Kontrak:</strong> {{ $data->akhir_kontrak }}</p>
                         <p><strong>Periode:</strong> {{ $data->periode }}</p>
                     </div>

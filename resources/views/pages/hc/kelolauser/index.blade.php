@@ -34,7 +34,7 @@ Kelola User || Human Capital
         </form>
     
         <!-- Tambahkan Pegawai Baru Button -->
-        <a href="{{route('hc.kelola-user.add')}}" class="btn btn-primary d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
+        <a href="#" class="btn btn-primary d-none d-sm-inline-block ms-3" data-bs-toggle="modal" data-bs-target="#modal-report">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M12 5l0 14" />
@@ -289,7 +289,7 @@ Kelola User || Human Capital
                               <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
                                 Cancel
                               </a>
-                              <button type="submit" href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+                              <button type="submit" class="btn btn-primary ms-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
                                 Create new User
                               </button>
@@ -299,6 +299,15 @@ Kelola User || Human Capital
                         </div>
                       </div>
                     </div>
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var myModal = new bootstrap.Modal(document.getElementById('modal-report'));
+                                myModal.show();
+                            });
+                        </script>
+                    @endif
+
 
                     <!-- Modal for Editing User -->
                     <div class="modal modal-blur fade" id="modal-report-edit-{{ $d->id }}" tabindex="-1" role="dialog" aria-hidden="true">

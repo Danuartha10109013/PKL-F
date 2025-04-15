@@ -100,11 +100,12 @@ Dashboard || Pegawai
                 <div class="row g-3">
                   <div class="col-md">
                     <div class="form-label">Gender</div>
-                    <select type="text" class="form-control" name="gender" value="{{$data->gender}}">
-                      <option value="" selected disabled>--Pilih Jenis Gender--</option>
-                      <option value="Laki-Laki">Laki-Laki</option>
-                      <option value="Perempuan">Perempuan</option>
-                    </select>
+                    <select class="form-control" name="gender">
+                      <option value="" disabled {{ $data->gender == null ? 'selected' : '' }}>--Pilih Jenis Gender--</option>
+                      <option value="Laki-Laki" {{ $data->gender == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
+                      <option value="Perempuan" {{ $data->gender == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                  </select>
+                  
                   </div>
                   <div class="col-md">
                     <div class="form-label">Tempat Lahir</div>
