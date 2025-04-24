@@ -64,8 +64,8 @@ Detail Project || {{$data->judul}}
                 <p><strong>End Date:</strong> {{ \Carbon\Carbon::parse($data->end)->format('d M Y') }}</p>
                 <p> 
                 @php
-                    $nilai = \App\Models\PenilaianM::where('project_id',$data->id)->where('user_id',Auth::user()->id)->value('total');
-                    $keterangan = \App\Models\PenilaianM::where('project_id',$data->id)->where('user_id',Auth::user()->id)->value('keterangan');
+                    $nilai = \App\Models\PenilaianM::where('project_id',$data->id)->where('user_id',Auth::user()->id)->average('total');
+                    $keterangan = \App\Models\PenilaianM::where('project_id',$data->id)->where('user_id',Auth::user()->id)->get();
                 @endphp
                 <div class="btn btn-primary">
                     <strong>Total Nilai:</strong>
@@ -78,7 +78,9 @@ Detail Project || {{$data->judul}}
 
                 </p>
                 @if ($keterangan)
-                <p><strong>Keterangan Nilai:</strong> {{$keterangan}}</p>
+                @foreach ($keterangan as $k)
+                <p><strong>Keterangan Nilai Lap {{$k->created_at->format('M Y')}}:</strong> {{$k->keterangan}}</p>
+                @endforeach
                 @else
                 <p><strong>Keterangan Nilai:</strong> Not available</p>
                 @endif

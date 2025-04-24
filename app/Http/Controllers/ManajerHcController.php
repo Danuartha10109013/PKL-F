@@ -40,6 +40,60 @@ class ManajerHcController extends Controller
             // If no users exist, start with EMP001
             $newNoPegawai = 'EMP001';
         }
+
+        $curentMonth = now()->format('m');
+        $curentYear = now()->format('Y');
+
+        // Cek apakah ada data penilaian untuk project ini
+        $cekPenilaian = PenilaianM::where('project_id', $id)
+            ->whereMonth('created_at', $curentMonth)
+            ->whereYear('created_at', $curentYear)
+            ->count();
+        $cekPegawai = PenilaianM::where('user_id', $data->pegawai_id)->value('id');
+
+        if ($cekPenilaian == 0 && $data->pegawai_id !== null) {
+            // Decode pegawai_id dari JSON
+            $user_ids = json_decode($data->pegawai_id, true); // pastikan $data diambil dari model ProjectM misalnya
+
+            foreach ($user_ids as $uid) {
+                $baru = new PenilaianM();
+                $baru->user_id = $uid;
+                $baru->project_id = $id;
+                $baru->save();
+
+                $lap = new LaporanM();
+                $lap->user_id = $uid;
+                $lap->project_id = $id;
+                $lap->save();
+            }
+        } else {
+            $user_ids = json_decode($data->pegawai_id, true); // pastikan $data diambil dari model ProjectM misalnya
+            // dd($user_ids);
+            // Cek apakah sudah ada data penilaian dengan user_id pada bulan ini
+            foreach ($user_ids as $u) {
+                // Cek apakah user_id $u sudah ada pada Penilaian untuk project_id, bulan dan tahun yang sama
+                $cekUserPenilaian = PenilaianM::where('project_id', $id)
+                    ->whereMonth('created_at', $curentMonth)
+                    ->whereYear('created_at', $curentYear)
+                    ->where('user_id', $u)
+                    ->first();  // Use first() to check if any record exists for this user_id
+            
+                if (!$cekUserPenilaian) {
+                    // Jika tidak ada, berarti user_id ini belum ada pada Penilaian, jadi simpan atau lanjutkan logika
+                    $baru = new PenilaianM();
+                        $baru->user_id = $u;
+                        $baru->project_id = $id;
+                        $baru->save();
+            
+                        $lap = new LaporanM();
+                        $lap->user_id = $u;
+                        $lap->project_id = $id;
+                        $lap->save();
+                }
+            }
+            
+        }
+
         // dd($cc);
         // $user_terlibat = User::where('id',$same)->get()
         return view('pages.kapro.project.detail',compact('data','users','cc','newNoPegawai'));

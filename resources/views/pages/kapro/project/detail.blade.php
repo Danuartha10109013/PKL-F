@@ -199,11 +199,8 @@ Detail Project || {{$data->judul}}
                     <th>Username</th>
                     <th>Role</th>
                     <th>Action</th>
-                    @if ($data->status == 2)
                     <th>Total Nilai</th>
                     <th>Laporan</th>
-                    @else
-                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -251,90 +248,135 @@ Detail Project || {{$data->judul}}
                             Pusat
                           @endif
                         </td>
-                        <td class="text-nowrap">
-
+                        <td id="laporan" class="text-nowrap laporan">
+                          <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                              const monthInput = document.getElementById('filterMonth');
+                              const laporanLists = document.getElementById('laporanLists');
+                          
+                              monthInput.addEventListener('change', function () {
+                                const selectedMonth = monthInput.value;
+                                const items = Array.from(document.querySelectorAll('.laporan-items'));
+                          
+                                if (!selectedMonth) return;
+                          
+                                // Bersihkan tampilan hasil filter atas
+                                laporanLists.innerHTML = '';
+                          
+                                // Tampilkan item yang cocok di atas dan sembunyikan yang tidak cocok
+                                items.forEach(item => {
+                                  const itemMonth = item.getAttribute('data-month');
+                          
+                                  if (itemMonth === selectedMonth) {
+                                    item.style.display = 'inline-block'; // tampilkan
+                                    laporanLists.appendChild(item.cloneNode(true)); // tampilkan di atas
+                                    laporanLists.appendChild(document.createElement('br'));
+                                    laporanLists.appendChild(document.createElement('br'));
+                                  } else {
+                                    item.style.display = 'none'; // sembunyikan dari bawah
+                                  }
+                                });
+                              });
+                            });
+                          </script>
+                          
                           @php
-                          $project = $data->id;
-                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->count();
-                          $total = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->value('total');
+
                           // dd($project);
+                          $pid = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
+                                  ->where('id', $data->id)
+                                  ->value('id');
+
+                            // dd($satu);
+                            $b= \App\Models\ProjectM::find($pid);
+                            $cc = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$b->id)->orderBy('created_at','desc')->get();
+                            $project = $data->id;
+                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->count();
+                          $total = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->average('total');
+                          // dd($total);
                           @endphp
                    
                         
-                      @if ($ids == 1 && $data->id == $project)
+                      {{-- @if ($ids == 1 && $data->id == $project)
                       Sudah DIniliai
-                      @elseif ($data->status == 2)
-                      @if (Auth::user()->role == 2)
-                      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nilaiModal{{ $d->id }}">
-                        Beri Nilai
-                      </button>
-                      @else
-                      @endif
-                      @else
-                          @endif
+                      @elseif ($data->status == 2) --}}
+                        @if (Auth::user()->role == 2)
+                        <div id="laporanLists">
+                          @foreach ($cc as $c)
+                          @php
+                          $modalId = 'nilaiModal-' . $d->id . '-' . $pid . '-' . $c->created_at->format('YmdHi');
+                          $kesamaan = \App\Models\PenilaianM::where('user_id',$d->id)->where('project_id',$pid)->where('created_at',$c->created_at)->value('id');
+                          // dd($c->created_at);
+                          $nilaiin = \App\Models\PenilaianM::find($kesamaan);
 
-                            <!-- Modal for scoring -->
-                            <div class="modal fade" id="nilaiModal{{ $d->id }}" tabindex="-1" aria-labelledby="nilaiModalLabel{{ $d->id }}" aria-hidden="true">
-                              <div class="modal-dialog">
-                                  <div class="modal-content">
-                                      <div class="modal-header">
-                                          <h5 class="modal-title" id="nilaiModalLabel{{ $d->id }}">Beri Nilai untuk {{ $d->name }}</h5>
-                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                      </div>
-                                      <div class="modal-body">
-                                          <form action="{{route('kapro.project.nilaiUser',$d->id)}}" method="POST">
-                                              @csrf
-                                              <!-- Hasil Kerja (35%) -->
-                                              <div class="mb-3">
-                                                  <label for="hasilKerja{{ $d->id }}" class="form-label">Hasil Kerja (35%)</label>
-                                                  <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja{{ $d->id }}" max="100" min="0" required>
-                                              </div>
-
-                                              <!-- Kualitas Kerja (40%) -->
-                                              <div class="mb-3">
-                                                  <label for="kualitasKerja{{ $d->id }}" class="form-label">Kualitas Kerja (40%)</label>
-                                                  <input type="number" name="kualitas_kerja" class="form-control" id="kualitasKerja{{ $d->id }}" max="100" min="0" required>
-                                              </div>
-
-                                              <!-- Kepatuhan SOP (25%) -->
-                                              <div class="mb-3">
-                                                  <label for="kepatuhanSOP{{ $d->id }}" class="form-label">Kepatuhan SOP (25%)</label>
-                                                  <input type="number" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP{{ $d->id }}" max="100" min="0" required>
-                                              </div>
-
-                                              <div class="mb-3">
-                                                  <label for="kepatuhanSOP{{ $d->id }}" class="form-label">Keterangan</label>
-                                                  <input type="text" name="keterangan" class="form-control" id="kepatuhanSOP{{ $d->id }}" max="100" min="0" >
-                                              </div>
-
-                                              <div class="modal-footer">
-                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                  <button type="submit" class="btn btn-primary">Submit</button>
-                                              </div>
-
-                                              <input type="text" name="project_id" value="{{$data->id}}" hidden>
-                                              <input type="text" name="user_id" value="{{$d->id}}" hidden>
-                                          </form>
-                                      </div>
-                                  </div>
-                              </div>
-                            </div>
-                            @if (Auth::user()->role==2)
-                              
-                              @if ($data->status == 0)
-                                
-                              <!-- Delete button triggers modal -->
-                              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
-                                  Delete
-                              </button>
-
-                              @else
-                              @endif
+                          $formattedMonth = $c->created_at->format('Y-m');
+                          @endphp
+                            @if ($nilaiin->total == null)
+                              <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-items" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                                Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
+                              </button> <br><br>
                             @else
+                              <button data-month="{{ $formattedMonth }}" class="laporan-items">Laporan {{ $c->created_at->format('M Y') }} Sudah Diniliai </button> <br><br>
                             @endif
+                            <!-- Modal for scoring -->
+                            <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="{{ $modalId }}Label">Beri Nilai untuk {{ $d->name }} -> {{ $c->created_at->format('M Y') }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form action="{{ route('kapro.project.nilaiUser', ['id' => $d->id, 'pid' => $pid, 'm' => $c->created_at]) }}" method="POST">
+                                          @csrf
+                        
+                                          <div class="mb-3">
+                                            <label for="hasilKerja-{{ $modalId }}" class="form-label">Hasil Kerja (35%)</label>
+                                            <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja-{{ $modalId }}" max="100" min="0" required>
+                                          </div>
+                        
+                                          <div class="mb-3">
+                                              <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
+                                              <input type="number" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" max="100" min="0" required>
+                                          </div>
+                        
+                                          <div class="mb-3">
+                                            <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
+                                            <input type="number" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" max="100" min="0" required>
+                                          </div>
+                                          
+                                          <div class="mb-3">
+                                            <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
+                                              <input type="text" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
+                                          </div>
+                        
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              <button type="submit" class="btn btn-primary">Submit</button>
+                                          </div>
+                        
+                                          <input type="hidden" name="project_id" value="{{ $data->id }}">
+                                          <input type="hidden" name="user_id" value="{{ $d->id }}">
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                              
+                              @endforeach
+                        </div>
 
-                
-                            <!-- Modal -->
+                            
+                          @if ($data->status == 0)_
+                          <!-- Delete button triggers modal -->
+                          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
+                              Delete
+                          </button>
+
+                          @else
+                          @endif
+                        @else
+                        @endif
                             <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -347,7 +389,7 @@ Detail Project || {{$data->judul}}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form action="{{ route('kapro.project.delete.user', $d->id) }}" method="POST">
+                                            <form action="{{ route('kapro.project.delete.user', ['id'=>$d->id, 'pid'=> $data->id]) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Yes, Delete</button>
@@ -357,25 +399,78 @@ Detail Project || {{$data->judul}}
                                 </div>
                             </div>
                         </td>
-                        @if ($data->status == 2)
                         <td>
-                          @if ($ids == 1 && $data->id == $project)
                           {{$total}}
-                          @else
-                            Belum diberi nilai
-                          @endif
                         </td>
-                        <td>
-                          @if (Auth::user()->role == 0 )
-                          <a href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id])}}" class="btn btn-primary">Lihat Laporan</a>
-                          @elseif (Auth::user()->role == 3)
-                          <a href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id]) }}" class="btn btn-primary">Lihat Laporan</a>
-                          @elseif (Auth::user()->role == 2)
-                          <a href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id])}}" class="btn btn-primary">Lihat Laporan</a>
-                          @endif
+                        <td id="laporan">
+                          <input type="month" class="mb-2" id="filterMonth">
+                          
+                          <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const monthInput = document.getElementById('filterMonth');
+                                const laporanList = document.getElementById('laporanList');
+                            
+                                monthInput.addEventListener('change', function () {
+                                    const val = monthInput.value; // Format: "2025-04"
+                                    if (!val) return;
+                            
+                                    const items = Array.from(document.querySelectorAll('.laporan-item'));
+                                    const matching = [];
+                                    const nonMatching = [];
+                            
+                                    items.forEach(item => {
+                                        if (item.dataset.month === val) {
+                                            matching.push(item);
+                                        } else {
+                                            nonMatching.push(item);
+                                        }
+                                    });
+                            
+                                    // Kosongkan list
+                                    laporanList.innerHTML = '';
+                            
+                                    // Tambahkan yang cocok & tampilkan
+                                    matching.forEach(item => {
+                                        item.style.display = 'inline-block';
+                                        laporanList.appendChild(item.cloneNode(true));
+                                        laporanList.appendChild(document.createElement('br'));
+                                        laporanList.appendChild(document.createElement('br'));
+                                    });
+                            
+                                    // Tambahkan yang tidak cocok tapi di-hide
+                                    nonMatching.forEach(item => {
+                                        const hiddenItem = item.cloneNode(true);
+                                        hiddenItem.style.display = 'none';
+                                        laporanList.appendChild(hiddenItem);
+                                        laporanList.appendChild(document.createElement('br'));
+                                        laporanList.appendChild(document.createElement('br'));
+                                    });
+                                });
+                            });
+                          </script>
+                          @php
+                            $satu = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
+                                  ->where('id', $data->id)
+                                  ->value('id');
+
+                            $dua= \App\Models\ProjectM::find($satu);
+                            $tiga = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$dua->id)->orderBy('created_at','desc')->get();
+                          @endphp  
+                          <div id="laporanList">
+                            @foreach ($tiga as $t)
+                            @php
+                              $formattedMonth = $t->created_at->format('Y-m');
+                            @endphp
+                            @if (Auth::user()->role == 0 )
+                            <a data-month="{{ $formattedMonth }}" href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            @elseif (Auth::user()->role == 3)
+                            <a data-month="{{ $formattedMonth }}" href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at]) }}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            @elseif (Auth::user()->role == 2)
+                            <a data-month="{{ $formattedMonth }}" href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            @endif
+                            @endforeach 
+                          </div>
                         </td>
-                        @else
-                        @endif
                       </tr>
                     @endforeach
                   @endif

@@ -17,73 +17,83 @@ class PerpanjangController extends Controller
         $penilaian = PenilaianM::all();
         $kontrak = KontrakM::all();
         $proyek = ProjectM::all();  // Replace this with query builder for whereJsonContains
-        
-        //menentukan max nilai
-        $maxValues = [
-            'hasil_kerja' => $penilaian->max('hasil_kerja'),
-            'kualitas_kerja' => $penilaian->max('kualitas_kerja'),
-            'kepatuhan_sop' => $penilaian->max('kepatuhan_sop'),
-        ];
-        //mencari score kontrak 
-        $results = $penilaian->map(function ($item) use ($maxValues, $kontrak, $proyek) {
-            $kontrakUser = $kontrak->where('user_id', $item->user_id)->sortByDesc('periode')->first();
-            $kontrakScore = $kontrakUser ? (int) $kontrakUser->periode : 0;
+// Menentukan total nilai rata-rata per pegawai
+$penilaianGrouped = $penilaian->groupBy('user_id')->map(function ($items) {
+    // Menghitung rata-rata nilai total per pegawai
+    $totalScore = $items->avg(function ($item) {
+        return ($item->total);
+    });
+    return $totalScore;
+});
+// dd($penilaianGrouped);
+// Menghitung skor kontrak dan proyek untuk setiap pegawai
+$results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $proyek) {
+    // Skor kontrak berdasarkan periode terbaru
+    $kontrakUser = $kontrak->where('user_id', $item->user_id)->sortByDesc('periode')->first();
+    $kontrakScore = $kontrakUser ? (int) $kontrakUser->periode : 0;
     
-            // Mencari total project per user
-            $projectInvolvement = ProjectM::whereJsonContains('pegawai_id', $item->user_id)->get(); // Fetch the relevant projects
-            $projectScore = $projectInvolvement->count() > 0 ? log($projectInvolvement->count() + 1) : 0;
-            
-            //normalisasi dari nilai / max nilai
-            $normalized = [
-                'hasil_kerja' => $item->hasil_kerja / $maxValues['hasil_kerja'],
-                'kualitas_kerja' => $item->kualitas_kerja / $maxValues['kualitas_kerja'],
-                'kepatuhan_sop' => $item->kepatuhan_sop / $maxValues['kepatuhan_sop'],
-            ];
+    // Menghitung total proyek yang diikuti oleh pegawai
+    $projectInvolvement = ProjectM::whereJsonContains('pegawai_id', $item->user_id)->get(); 
+    $projectScore = $projectInvolvement->count() > 0 ? log($projectInvolvement->count() + 1) : 0;
     
-            // penetuan boot setiap prameter
-            $weights = [
-                'hasil_kerja' => 0.3,
-                'kualitas_kerja' => 0.3,
-                'kepatuhan_sop' => 0.2,
-                'kontrak' => 0.1,
-                'project' => 0.1,
-            ];
-            
-            //perhitungan SAW
-            $total = (
-                $normalized['hasil_kerja'] * $weights['hasil_kerja'] +
-                $normalized['kualitas_kerja'] * $weights['kualitas_kerja'] +
-                $normalized['kepatuhan_sop'] * $weights['kepatuhan_sop'] +
-                $kontrakScore * $weights['kontrak'] +
-                $projectScore * $weights['project']
-            );
-            // hasil
-            return [
-                'user_id' => $item->user_id,
-                'total' => $total,
-                'periode' => $kontrakScore,
-                'projects' => $projectInvolvement->pluck('judul'),
-            ];
-        });
+    // Ambil nilai total berdasarkan rata-rata untuk pegawai ini
+    $totalScore = $penilaianGrouped[$item->user_id] ?? 0;
     
-        // sort descending hasil 
-        $uniqueResults = $results->groupBy('user_id')->map(function ($group) {
-            return $group->sortByDesc('total')->first();
-        });
-    
-        $sortedResults = $uniqueResults->sortByDesc('total');
-        
+    // Normalisasi nilai total
+    $normalizedTotal = $totalScore / max($penilaianGrouped->values()->toArray());
 
-        // Menyimpan data dalam varabel $data
-        $data = $sortedResults->map(function ($item) {
-            $user = User::find($item['user_id']);
-            return [
-                'user' => $user,
-                'total' => $item['total'],
-                'periode' => $item['periode'],
-                'projects' => $item['projects'],
-            ];
-        });
+    // Bobot untuk setiap parameter
+    $weights = [
+        'total' => 0.6,  // Bobot untuk total nilai
+        'kontrak' => 0.2,
+        'project' => 0.2,
+    ];
+    // dd($penilaianGrouped);
+    
+    // Perhitungan SAW (Simple Additive Weighting)
+    $total = (
+        $normalizedTotal * $weights['total'] +
+        $kontrakScore * $weights['kontrak'] +
+        $projectScore * $weights['project']
+    );
+    // dd($total);
+    // Hasil akhir untuk setiap pegawai
+    return [
+        'user_id' => $item->user_id,
+        'total' => $total,
+        'periode' => $kontrakScore,
+        'projects' => $projectInvolvement->pluck('judul'),
+    ];
+});
+// dd($results);
+$uniqueResults = collect($results)->groupBy('user_id')->map(function ($group) {
+    // If it's an array, ensure you're treating it as an array and access elements with array notation
+    $firstItem = $group[0]; 
+    $projects = $group->pluck('projects')->flatten()->unique();// Get the first item from the group (array)
+    return [
+        'user_id' => $firstItem['user_id'], // Access 'user_id' directly as array
+        'total' => collect($group)->sum('total'), // Sum the 'total' for the same user_id
+        'periode' => $firstItem['periode'],
+        'projects' => $projects,
+    ];
+});
+
+// dd($uniqueResults);
+
+$sortedResults = $uniqueResults->sortByDesc('total');
+
+
+// Menyimpan data dalam varabel $data
+$data = $sortedResults->map(function ($item) {
+    $user = User::find($item['user_id']);
+    return [
+        'user' => $user,
+        'total' => $item['total'],
+        'periode' => $item['periode'],
+        'projects' => $item['projects'],
+    ];
+});
+// dd($data);
 
         
         return view('pages.manajerhc.perpnajang.index', compact('data'));

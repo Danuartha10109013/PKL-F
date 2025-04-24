@@ -74,7 +74,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/detail/{id}',[ProjectController::class,'detail'])->name('kelola-project.detail');
             Route::put('/update/{id}',[KProjectController::class,'update'])->name('kelola-project.update');
             Route::delete('/delete/{id}',[KProjectController::class,'delete'])->name('kelola-project.delete');
-            Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::get('/laporan/{id}/{id1}/{m}',[LaporanController::class,'laporan'])->name('project.laporan');
             Route::get('/laporan/kapro/karpo/{id}',[LaporanController::class,'laporankapro'])->name('project.laporan.ketua.project');
             Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
         });
@@ -98,7 +98,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[ManajerHcController::class,'index'])->name('project');
             Route::get('/project/{id}',[ManajerHcController::class,'detail'])->name('project.detail');
             Route::get('/project/laporan/{id}',[ManajerHcController::class,'laporankapro'])->name('project.laporan');
-            Route::get('/project/laporan/pegawai/{id}/{id1}',[ManajerHcController::class,'laporanpegawai'])->name('project.laporanpegawai');
+            Route::get('/project/laporan/pegawai/{id}/{id1}/{m}',[LaporanController::class,'laporan'])->name('project.laporanpegawai');
             Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');
             
         });
@@ -141,9 +141,9 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::post('/addUser',[ProjectController::class,'addUser'])->name('project.addUser');
             Route::post('/activate/{id}',[ProjectController::class,'activate'])->name('project.activate');
             Route::get('/complete/{id}',[ProjectController::class,'complete'])->name('project.complete');
-            Route::delete('/delete/{id}',[ProjectController::class,'delete_user'])->name('project.delete.user');
-            Route::post('/nilaiUser/{id}',[ProjectController::class,'nilaiUser'])->name('project.nilaiUser');
-            Route::get('/laporan/{id}/{id1}',[LaporanController::class,'laporan'])->name('project.laporan');
+            Route::delete('/delete/{id}/{pid}',[ProjectController::class,'delete_user'])->name('project.delete.user');
+            Route::post('/nilaiUser/{id}/{pid}/{m}',[ProjectController::class,'nilaiUser'])->name('project.nilaiUser');
+            Route::get('/laporan/{id}/{id1}/{m}',[LaporanController::class,'laporan'])->name('project.laporan');
             Route::get('/isilaporan/{id}', [ProjectController::class, 'isilaporan'])->name('project.laporan.isi'); 
             Route::put('/update/{id}', [ProjectController::class, 'isiupdate'])->name('project.update.isi'); 
             Route::get('/print/{id}',[ProjectController::class,'print'])->name('project.print');

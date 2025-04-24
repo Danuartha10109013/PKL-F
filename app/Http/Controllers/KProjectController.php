@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LaporanM;
+use App\Models\PenilaianM;
 use App\Models\ProjectM;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -104,6 +106,9 @@ class KProjectController extends Controller
             $user->project_id = null;
             $user->save(); // Use save() to persist the changes
         }
+
+        PenilaianM::where('project_id',$id)->delete();
+        LaporanM::where('project_id',$id)->delete();
     return redirect()->back()->with('success', 'Item deleted successfully.');
     }
 

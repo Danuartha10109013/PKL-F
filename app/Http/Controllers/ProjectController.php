@@ -41,6 +41,61 @@ class ProjectController extends Controller
             // If no users exist, start with EMP001
             $newNoPegawai = 'EMP001';
         }
+
+        $curentMonth = now()->format('m');
+        $curentYear = now()->format('Y');
+
+        // Cek apakah ada data penilaian untuk project ini
+        $cekPenilaian = PenilaianM::where('project_id', $id)
+            ->whereMonth('created_at', $curentMonth)
+            ->whereYear('created_at', $curentYear)
+            ->count();
+        $cekPegawai = PenilaianM::where('user_id', $data->pegawai_id)->value('id');
+
+        if ($cekPenilaian == 0 && $data->pegawai_id !== null) {
+            // Decode pegawai_id dari JSON
+            $user_ids = json_decode($data->pegawai_id, true); // pastikan $data diambil dari model ProjectM misalnya
+
+            foreach ($user_ids as $uid) {
+                $baru = new PenilaianM();
+                $baru->user_id = $uid;
+                $baru->project_id = $id;
+                $baru->save();
+
+                $lap = new LaporanM();
+                $lap->user_id = $uid;
+                $lap->project_id = $id;
+                $lap->save();
+            }
+        } else {
+            $user_ids = json_decode($data->pegawai_id, true); // pastikan $data diambil dari model ProjectM misalnya
+            // dd($user_ids);
+            // Cek apakah sudah ada data penilaian dengan user_id pada bulan ini
+            foreach ($user_ids as $u) {
+                // Cek apakah user_id $u sudah ada pada Penilaian untuk project_id, bulan dan tahun yang sama
+                $cekUserPenilaian = PenilaianM::where('project_id', $id)
+                    ->whereMonth('created_at', $curentMonth)
+                    ->whereYear('created_at', $curentYear)
+                    ->where('user_id', $u)
+                    ->first();  // Use first() to check if any record exists for this user_id
+            
+                if (!$cekUserPenilaian) {
+                    // Jika tidak ada, berarti user_id ini belum ada pada Penilaian, jadi simpan atau lanjutkan logika
+                    $baru = new PenilaianM();
+                        $baru->user_id = $u;
+                        $baru->project_id = $id;
+                        $baru->save();
+            
+                        $lap = new LaporanM();
+                        $lap->user_id = $u;
+                        $lap->project_id = $id;
+                        $lap->save();
+                }
+            }
+            
+        }
+
+
         // dd($cc);
         // $user_terlibat = User::where('id',$same)->get()
         return view('pages.kapro.project.detail',compact('data','users','cc','newNoPegawai'));
@@ -114,15 +169,6 @@ class ProjectController extends Controller
         $data = ProjectM::find($id);
         $data->status = 2;
         $data->save();
-        $user = json_decode($data->pegawai_id);
-        // dd($user);
-        foreach ($user as $u){
-            $laporan = new LaporanM();
-            $laporan->project_id = $data->id;
-            $laporan->user_id = (int) $u; // Konversi ke integer
-            $laporan->save();
-        }
-        
 
         $laporankapro = new LaporanM();
         $laporankapro->project_id = $data->id;
@@ -133,12 +179,13 @@ class ProjectController extends Controller
 
     }
 
-    public function delete_user($id)
+    public function delete_user($id,$pid)
     {
+        // dd($pid,$id);
         $user = \App\Models\User::findOrFail($id);
 
-        $projects = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$id)->get();
-
+        $projects = \App\Models\ProjectM::where('id',$pid)->whereJsonContains('pegawai_id', (string)$id)->get();
+        // dd($projects);
         foreach ($projects as $project) {
             $pegawaiIds = json_decode($project->pegawai_id, true) ?? [];
 
@@ -150,10 +197,14 @@ class ProjectController extends Controller
             }
         }
 
+        PenilaianM::where('user_id', $id)->where('project_id',$pid)->delete();
+        LaporanM::where('user_id', $id)->where('project_id',$pid)->delete();
+
+
         return redirect()->back()->with('success', 'User deleted successfully, and they have been removed from all related projects.');
     }
 
-    public function nilaiUser(Request $request, $id)
+    public function nilaiUser(Request $request, $id,$pid,$m)
     {
         $request->validate([
             'project_id' => 'required|string|max:255',
@@ -161,22 +212,21 @@ class ProjectController extends Controller
             'kualitas_kerja' => 'required|numeric|min:0|max:100',
             'kepatuhan_sop' => 'required|numeric|min:0|max:100',
         ]);
-    
+        // dd($request->all());
         $user = User::findOrFail($id);
     
         $hasilKerjaScore = $request->input('hasil_kerja') * 0.35; 
         $kualitasKerjaScore = $request->input('kualitas_kerja') * 0.40; 
         $kepatuhanSOPScore = $request->input('kepatuhan_sop') * 0.25; 
         $totalScore = $hasilKerjaScore + $kualitasKerjaScore + $kepatuhanSOPScore;
-    
-        $data = new PenilaianM();
-        $data->user_id = $request->input('user_id');
-        $data->project_id = $request->input('project_id');
-        $data->hasil_kerja = $request->input('hasil_kerja');
-        $data->kualitas_kerja = $request->input('kualitas_kerja');
-        $data->kepatuhan_sop = $request->input('kepatuhan_sop');
+        $code = PenilaianM::where('user_id',$id)->where('project_id',$pid)->where('created_at',$m)->value('id');
+        $data = PenilaianM::find($code);
+        // dd($code);
+        $data->hasil_kerja = $request->hasil_kerja;
+        $data->kualitas_kerja = $request->kualitas_kerja;
+        $data->kepatuhan_sop = $request->kepatuhan_sop;
         $data->total = $totalScore;
-        $data->keterangan = $request->input('keterangan');
+        $data->keterangan = $request->keterangan;
         $data->save();
     
         return redirect()->back()->with('success', 'Nilai berhasil diberikan untuk ' . $user->name);

@@ -80,11 +80,20 @@ Project || Pegawai
                             <td>{{$d->start}}</td>
                             <td>{{$d->end}}</td>
                             <td>
-                                <a href="{{route('pegawai.project.detail',$d->id)}}" class="btn btn-primary">Detail</a>
-                                @if ($d->status == 2)
-                                <a href="{{route('pegawai.project.laporan',$d->id)}}" class="btn btn-success">Isi laporan</a>
-                                @else
-                                @endif
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <a href="{{route('pegawai.project.detail',$d->id)}}" class="btn btn-primary">Detail</a>
+                                </div>
+                                <div class="col-md-6">
+                                  @php
+                                    $laporan = \App\Models\LaporanM::where('project_id',$d->id)->where('user_id',Auth::user()->id)->orderBy('created_at','desc')->get();
+                                  @endphp
+                                  @foreach ($laporan as $l)
+                                  <a href="{{route('pegawai.project.laporan',$l->id)}}" class="btn btn-success">Isi laporan -> {{$l->created_at->format(' M Y')}}</a> <br> <br>
+                                    
+                                  @endforeach
+                                </div>
+                              </div>
                             </td>
                         </tr>
                         @endforeach

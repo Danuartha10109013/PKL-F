@@ -16,7 +16,7 @@ Laporan Pegawai || Kepala seksi kesejahteraan aparatur
                     // dd($name);
                     $project = \App\Models\ProjectM::where('id',$laporan->project_id)->value('judul');
                 @endphp
-                <h3 class="mb-4">Laporan {{$name}}  &nbsp;
+                <h3 class="mb-4">Laporan {{$name}} -> {{$laporan->created_at->format('M')}} {{$laporan->created_at->format('Y')}}&nbsp;
                     <img src="{{asset('storage/'.$profile)}}" width="5%" alt="{{$profile}}">
                 </h3>
                 <h4 class="mb-4">Project : {{$project}} </h4>
