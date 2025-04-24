@@ -300,8 +300,8 @@ Detail Project || {{$data->judul}}
                       {{-- @if ($ids == 1 && $data->id == $project)
                       Sudah DIniliai
                       @elseif ($data->status == 2) --}}
-                        @if (Auth::user()->role == 2)
-                        <div id="laporanLists">
+                        {{-- @if (Auth::user()->role == 2) --}}
+                        <div id="laporanLists{{$d->id}}">
                           @foreach ($cc as $c)
                           @php
                           $modalId = 'nilaiModal-' . $d->id . '-' . $pid . '-' . $c->created_at->format('YmdHi');
@@ -312,11 +312,11 @@ Detail Project || {{$data->judul}}
                           $formattedMonth = $c->created_at->format('Y-m');
                           @endphp
                             @if ($nilaiin->total == null)
-                              <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-items" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                              <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
                                 Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
                               </button> <br><br>
                             @else
-                              <button data-month="{{ $formattedMonth }}" class="laporan-items">Laporan {{ $c->created_at->format('M Y') }} Sudah Diniliai </button> <br><br>
+                              <button data-month="{{ $formattedMonth }}" class="laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Laporan {{ $c->created_at->format('M Y') }} Sudah Diniliai </button> <br><br>
                             @endif
                             <!-- Modal for scoring -->
                             <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
@@ -375,8 +375,8 @@ Detail Project || {{$data->judul}}
 
                           @else
                           @endif
-                        @else
-                        @endif
+                        {{-- @else
+                        @endif --}}
                             <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -399,55 +399,68 @@ Detail Project || {{$data->judul}}
                                 </div>
                             </div>
                         </td>
+                        @if ($data->status !== null)
                         <td>
                           {{$total}}
                         </td>
                         <td id="laporan">
-                          <input type="month" class="mb-2" id="filterMonth">
+                          <input type="month" class="mb-2" id="filterMonth{{$d->id}}">
                           
                           <script>
                             document.addEventListener("DOMContentLoaded", function () {
-                                const monthInput = document.getElementById('filterMonth');
-                                const laporanList = document.getElementById('laporanList');
-                            
+                                const userId = "{{ $d->id }}";
+                                const monthInput = document.getElementById('filterMonth' + userId);
+                                const laporanList = document.getElementById('laporanList' + userId);
+                                const laporanLists = document.getElementById('laporanLists' + userId); // tambahan
+                        
                                 monthInput.addEventListener('change', function () {
                                     const val = monthInput.value; // Format: "2025-04"
                                     if (!val) return;
-                            
-                                    const items = Array.from(document.querySelectorAll('.laporan-item'));
-                                    const matching = [];
-                                    const nonMatching = [];
-                            
-                                    items.forEach(item => {
-                                        if (item.dataset.month === val) {
-                                            matching.push(item);
-                                        } else {
-                                            nonMatching.push(item);
-                                        }
-                                    });
-                            
-                                    // Kosongkan list
-                                    laporanList.innerHTML = '';
-                            
-                                    // Tambahkan yang cocok & tampilkan
-                                    matching.forEach(item => {
-                                        item.style.display = 'inline-block';
-                                        laporanList.appendChild(item.cloneNode(true));
-                                        laporanList.appendChild(document.createElement('br'));
-                                        laporanList.appendChild(document.createElement('br'));
-                                    });
-                            
-                                    // Tambahkan yang tidak cocok tapi di-hide
-                                    nonMatching.forEach(item => {
-                                        const hiddenItem = item.cloneNode(true);
-                                        hiddenItem.style.display = 'none';
-                                        laporanList.appendChild(hiddenItem);
-                                        laporanList.appendChild(document.createElement('br'));
-                                        laporanList.appendChild(document.createElement('br'));
-                                    });
+                        
+                                    const processList = (container, containerLabel) => {
+                                        if (!container) return;
+                        
+                                        const items = Array.from(container.querySelectorAll('.laporan-item'));
+                                        const matching = [];
+                                        const nonMatching = [];
+                        
+                                        items.forEach(item => {
+                                            if (item.dataset.month === val) {
+                                                matching.push(item);
+                                            } else {
+                                                nonMatching.push(item);
+                                            }
+                                        });
+                        
+                                        container.innerHTML = '';
+                        
+                                        matching.forEach((item, index) => {
+                                            const cloned = item.cloneNode(true);
+                                            cloned.style.display = 'inline-block';
+                                            cloned.id = `matching-${containerLabel}-${userId}-${index}`;
+                                            container.appendChild(cloned);
+                                            container.appendChild(document.createElement('br'));
+                                            container.appendChild(document.createElement('br'));
+                                        });
+                        
+                                        nonMatching.forEach((item, index) => {
+                                            const hiddenItem = item.cloneNode(true);
+                                            hiddenItem.style.display = 'none';
+                                            hiddenItem.id = `nonmatching-${containerLabel}-${userId}-${index}`;
+                                            container.appendChild(hiddenItem);
+                                            container.appendChild(document.createElement('br'));
+                                            container.appendChild(document.createElement('br'));
+                                        });
+                                    };
+                        
+                                    processList(laporanList, 'list');
+                                    processList(laporanLists, 'lists');
                                 });
                             });
-                          </script>
+                        </script>
+                        
+                        
+                        
                           @php
                             $satu = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
                                   ->where('id', $data->id)
@@ -456,21 +469,23 @@ Detail Project || {{$data->judul}}
                             $dua= \App\Models\ProjectM::find($satu);
                             $tiga = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$dua->id)->orderBy('created_at','desc')->get();
                           @endphp  
-                          <div id="laporanList">
+                          <div id="laporanList{{$d->id}}">
                             @foreach ($tiga as $t)
                             @php
                               $formattedMonth = $t->created_at->format('Y-m');
                             @endphp
                             @if (Auth::user()->role == 0 )
-                            <a data-month="{{ $formattedMonth }}" href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            <a data-month="{{ $formattedMonth }}" href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
                             @elseif (Auth::user()->role == 3)
-                            <a data-month="{{ $formattedMonth }}" href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at]) }}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            <a data-month="{{ $formattedMonth }}" href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at]) }}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
                             @elseif (Auth::user()->role == 2)
-                            <a data-month="{{ $formattedMonth }}" href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                            <a data-month="{{ $formattedMonth }}" href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
                             @endif
                             @endforeach 
                           </div>
                         </td>
+                        @else
+                        @endif
                       </tr>
                     @endforeach
                   @endif
