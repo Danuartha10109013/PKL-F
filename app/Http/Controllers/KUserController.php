@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotifEvent;
 use App\Exports\UserExportExcel;
 use App\Models\HistoryPerpanjanganM;
 use App\Models\KontrakM;
 use App\Models\LaporanM;
+use App\Models\NotifM;
 use App\Models\ProjectM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Events\NotifikasiBaru;
+use Illuminate\Support\Facades\Http;
 
 class KUserController extends Controller
 {
@@ -205,6 +209,23 @@ public function perpanjang(Request $request,$id){
     $history->akhir = $request->end_date;
     $history->tanggal_perpanjangan = now()->format('Y-m-d');
     $history->save();
+
+    $notif = NotifM::create([
+        'title' => "Perpanjangan Kontrak",
+        'value' => "Selamat, kontrak kamu telah diperpanjang sampai dengan " . $data->akhir_kontrak,
+        'status' => 0,
+        'user_id' => $data->user_id,
+    ]);
+
+    // Kirim notifikasi via broadcast
+    // event(new \App\Events\NotifikasiBaru($notif));
+
+    NotifEvent::dispatch($notif);
+    
+
+    
+
+    
 
     return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
 }

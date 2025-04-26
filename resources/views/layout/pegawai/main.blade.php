@@ -9,6 +9,7 @@
 -->
 <html lang="en">
   <head>
+	<meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
@@ -108,7 +109,60 @@
         </footer>
       </div>
     </div>
-    
+
+	<!-- Load Pusher & Echo -->
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.js"></script>
+
+<script>
+// Inisialisasi Pusher
+const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+    cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+    encrypted: true,
+});
+
+// Inisialisasi Echo
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: "{{ env('PUSHER_APP_KEY') }}",
+    cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+    forceTLS: true,
+    encrypted: true,
+    pusher: pusher
+});
+
+// Minta izin notifikasi
+if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
+// Ambil ID user login dari server
+const authUserId = "{{ Auth::user()->id }}"; // contoh: 5
+console.log(authUserId);
+document.addEventListener('DOMContentLoaded', function() {
+    window.Echo.channel('pesan-baru')
+        .listen('NotifEvent', (e) => {
+            console.log('Notifikasi diterima:', e);
+
+            // Cek apakah notifikasi untuk user ini
+            if (e.notif.user_id == authUserId) {
+                if (Notification.permission === "granted") {
+                    new Notification(e.notif.title, {
+                        body: e.notif.value,
+                        icon: '/path/to/icon.png', // ganti icon jika mau
+                    });
+                } else {
+                    console.log('Izin notifikasi belum diberikan.');
+                }
+            } else {
+                console.log('Notifikasi bukan untuk user ini.');
+            }
+        });
+});
+</script>
+
+
+	
     <!-- Libs JS -->
     <script src="{{asset('vendor')}}/dist/libs/apexcharts/dist/apexcharts.min.js?1692870487" defer></script>
     <script src="{{asset('vendor')}}/dist/libs/jsvectormap/dist/js/jsvectormap.min.js?1692870487" defer></script>

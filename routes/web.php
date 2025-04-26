@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifikasiBaru;
 use App\Http\Controllers\DashbardController;
 use App\Http\Controllers\KGajiController;
 use App\Http\Controllers\KKontrakController;
@@ -13,12 +14,39 @@ use App\Http\Controllers\PerpanjangController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\AutoLogout;
+use App\Models\NotifM;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 // Routes for authentication
 Route::get('/', [LoginController::class, 'index'])->name('auth.login');
 Route::post('/login-proses', [LoginController::class, 'login_proses'])->name('login-proses');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::post('/notif/mark-selected', function (Request $request) {
+    $ids = $request->input('ids', []);
+    if (!empty($ids)) {
+        NotifM::whereIn('id', $ids)
+            ->where('user_id', Auth::id())
+            ->update(['status' => 1]);
+    }
+    return response()->json(['success' => true]);
+});
+
+
+Route::post('/notif/clear-selected', function (Request $request) {
+    $ids = $request->input('ids', []);
+    
+    if (!empty($ids)) {
+        \App\Models\NotifM::whereIn('id', $ids)
+            ->where('user_id', auth()->id())
+            ->update(['status' => 2]);
+    }
+    
+    return response()->json(['success' => true]);
+});
+
 
 
 //auto Logout
