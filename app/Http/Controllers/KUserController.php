@@ -196,6 +196,7 @@ public function delete($id)
 }
 
 public function perpanjang(Request $request,$id){
+    // dd($request->all());
     $data = KontrakM::find($id);
     $data->awal_kontrak = $request->start_date;
     $data->akhir_kontrak = $request->end_date;
