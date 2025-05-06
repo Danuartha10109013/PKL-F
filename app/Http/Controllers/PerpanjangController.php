@@ -25,6 +25,10 @@ $penilaianGrouped = $penilaian->groupBy('user_id')->map(function ($items) {
     });
     return $totalScore;
 });
+if ($penilaianGrouped->filter()->isEmpty()) {
+    return redirect()->back()->with('error', 'Belum Ada Penilaian');
+}
+
 // dd($penilaianGrouped);
 // Menghitung skor kontrak dan proyek untuk setiap pegawai
 $results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $proyek) {
@@ -40,7 +44,7 @@ $results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $p
     $totalScore = $penilaianGrouped[$item->user_id] ?? 0;
     
     // Normalisasi nilai total
-    $normalizedTotal = $totalScore / max($penilaianGrouped->values()->toArray());
+    $normalizedTotal = $totalScore / max($penilaianGrouped->values()->toArray()) ;
 
     // Bobot untuk setiap parameter
     $weights = [
