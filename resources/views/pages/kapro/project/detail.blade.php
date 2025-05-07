@@ -312,9 +312,11 @@ Detail Project || {{$data->judul}}
                           $formattedMonth = $c->created_at->format('Y-m');
                           @endphp
                             @if ($nilaiin->total == null)
-                              <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
-                                Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
-                              </button> <br><br>
+                              @if(Auth::user()->role == 2)
+                                <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                                  Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
+                                </button> <br><br>
+                                @endif
                             @else
                               <button data-month="{{ $formattedMonth }}" class="laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Laporan {{ $c->created_at->format('M Y') }} Sudah Diniliai </button> <br><br>
                             @endif
