@@ -2,6 +2,7 @@
 
 use App\Events\NotifikasiBaru;
 use App\Http\Controllers\DashbardController;
+use App\Http\Controllers\DataMasterController;
 use App\Http\Controllers\KGajiController;
 use App\Http\Controllers\KKontrakController;
 use App\Http\Controllers\KProjectController;
@@ -115,6 +116,12 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/export',[KKontrakController::class,'export'])->name('kelola-kontrak.export');
             Route::get('/show/{id}',[KKontrakController::class,'show'])->name('kelola-kontrak.show');
             Route::get('/print/{id}',[KKontrakController::class,'print'])->name('kelola-kontrak.print');
+        });
+        Route::prefix('k-data-master')->group(function () {
+            Route::get('/',[DataMasterController::class,'index'])->name('k-data-master');
+            Route::post('/{type}/store', [DataMasterController::class, 'store'])->name('k-data-master.store');
+            Route::put('/{id}/edit', [DataMasterController::class, 'edit'])->name('k-data-master.edit');
+            Route::delete('/{id}/delete', [DataMasterController::class, 'delete'])->name('k-data-master.delete');
         });
     });
 

@@ -82,13 +82,25 @@
                 <input type="text" name="username" class="form-control" placeholder="username or email" autocomplete="off">
               </div>
               <div class="mb-2">
-                <label class="form-label">
-                  Password
-                <input type="password" name="password" class="form-control" placeholder="password" autocomplete="off">
-                  
-                </label>
-                
-              </div>
+  <label class="form-label">
+    Password
+    <div class="input-group">
+      <input type="password" name="password" id="password" class="form-control" placeholder="password" autocomplete="off">
+      <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+        👁️
+      </button>
+    </div>
+  </label>
+</div>
+
+<script>
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById("password");
+    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+    passwordInput.setAttribute("type", type);
+  }
+</script>
+
               <div class="mb-2">
                 <label class="form-check">
                   <input type="checkbox" class="form-check-input"/>

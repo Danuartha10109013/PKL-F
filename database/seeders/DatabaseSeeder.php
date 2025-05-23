@@ -1,4 +1,6 @@
 <?php
+
+use Database\Seeders\DataMasterSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -137,6 +139,9 @@ class DatabaseSeeder extends Seeder
                 'project_id' => null,
                 'deleteing' => 0,
             ],
+        ]);
+        $this->call([
+            DataMasterSeeder::class,
         ]);
     }
 }
