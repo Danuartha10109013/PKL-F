@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DepartementM;
+use App\Models\KategoriM;
 use App\Models\LaporanM;
 use App\Models\PenilaianM;
 use App\Models\ProjectM;
+use App\Models\StatusM;
+use App\Models\StrategicM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,10 +46,16 @@ class KProjectController extends Controller
         $countpegawai = ProjectM::where('status',0)->count();
         $counthc = ProjectM::where('status',1)->count();
         $countkapro = ProjectM::where('status',2)->count();
+
+        $kategori = KategoriM::all();
+        $status = StatusM::all();
+        $departement = DepartementM::all();
+        $strategic = StrategicM::all();
+
         if(Auth::user()->role == 0){
-            return view('pages.hc.kelolaproject.index',compact('data','count','countpegawai','counthc','countkapro','hasil','datakapro','Kapro'));
+            return view('pages.hc.kelolaproject.index',compact('data','count','countpegawai','counthc','countkapro','hasil','datakapro','Kapro','kategori','status','departement','strategic'));
         }else{
-            return view('pages.kapro.kelolauser.index',compact('data','count','countpegawai','counthc','countkapro','hasil','datakapro','Kapro'));
+            return view('pages.kapro.kelolauser.index',compact('data','count','countpegawai','counthc','countkapro','hasil','datakapro','Kapro','kategori','status','departement','strategic'));
         }
     }
 

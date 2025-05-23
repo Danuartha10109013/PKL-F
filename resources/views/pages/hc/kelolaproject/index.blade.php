@@ -396,20 +396,18 @@ Kelola Project || Human Capital
                   <label class="form-label">Kategori</label>
                   <select type="text" class="form-control" name="kategori" placeholder="Isi Dept Operasi">
                     <option value="" selected disabled>--Pilih Kategori--</option>
-                    <option value="Besar" >Besar</option>
-                    <option value="Kecil" >Kecil</option>
-                    <option value="Mega D&B" >Mega D&B</option>
-                    <option value="Mega Non D&B" >Mega Non D&B</option>
-                    <option value="Menengah" >Menengah</option>
+                    @foreach ($kategori as $k)
+                      <option value="{{$k->kategori}}" >{{$k->kategori}}</option>
+                    @endforeach
                   </select>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Dept Operasi</label>
                   <select type="text" class="form-control" name="divisi" placeholder="Isi Dept Operasi">
                     <option value="" selected disabled>--Pilih Departemen--</option>
-                    <option value="HSR Departement" >HSR Departement</option>
-                    <option value="Operation 1 Deaprtemen" >Operation 1 Deaprtemen</option>
-                    <option value="Operation 2 Deaprtemen" >Operation 2 Deaprtemen</option>
+                    @foreach ($departement as $dep)
+                    <option value="{{$dep->departement}}" >{{$dep->departement}}</option>
+                    @endforeach
                   </select>
                 </div>
                 <div class="mb-3">
@@ -430,20 +428,19 @@ Kelola Project || Human Capital
                   <label class="form-label">Status project</label>
                   <select type="text" class="form-control" name="statusin" placeholder="Isi Dept Operasi">
                     <option value="" selected disabled>--Pilih Status--</option>
-                    <option value="Proyek JO" >Proyek JO</option>
-                    <option value="Proyek Non JO" >Proyek Non JO</option>
+                    @foreach ($status as $st)
+                      
+                    <option value="{{$st->status}}" >{{$st->status}}</option>
+                    @endforeach
                   </select>
                 </div> 
                 <div class="mb-3">
                   <label class="form-label">Strategic Business Unit</label>
                   <select type="text" class="form-control" name="sbu" placeholder="Isi Dept Operasi">
                     <option value="" selected disabled>--Pilih SBU--</option>
-                    <option value="AIRPORT" >AIRPORT</option>
-                    <option value="BENDUNGAN" >BENDUNGAN</option>
-                    <option value="JALAN & JEMBATAN" >JALAN & JEMBATAN</option>
-                    <option value="RAILWAY" >RAILWAY</option>
-                    <option value="WATER INFRASTRUCTURE" >WATER INFRASTRUCTURE</option>
-                    <option value="Proyek Non JO" >Proyek Non JO</option>
+                    @foreach ($strategic as $stra)
+                    <option value="{{$stra->strategic}}" >{{$stra->strategic}}</option>
+                    @endforeach
                   </select>
                 </div> 
                  
