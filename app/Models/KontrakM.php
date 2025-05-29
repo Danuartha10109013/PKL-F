@@ -24,6 +24,7 @@ class KontrakM extends Model
         'lokasi_bpjs',
         'terdaftar_bpjstk',
         'status_pegawai',
+        'status',
     ];
 
     // Optionally, you can define any relationships here
