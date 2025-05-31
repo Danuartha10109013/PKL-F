@@ -30,6 +30,7 @@
                                     <th>Periode Kontrak</th>
                                     <th>Riwayat Proyek</th>
                                     <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +60,7 @@
                                                 // dd($remainingDays);
                                             @endphp
                                             @if ($remainingDays < 0)
+                                            Masih dalam Kontrak
                                             @else
                                             <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $item['user']->id  }}">
                                                 <i class=""></i> Perpanjang
@@ -98,6 +100,7 @@
                                               </div>
                                             @endif
                                         </td>
+                                        <td>{{$kontrak_value->status ?? 'Belum Diperpanjang'}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

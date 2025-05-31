@@ -201,6 +201,7 @@ public function perpanjang(Request $request,$id){
     $data->awal_kontrak = $request->start_date;
     $data->akhir_kontrak = $request->end_date;
     $data->periode = $data->periode + 1;
+    $data->status = 'Sudah Diperpanjang';
     $data->save();
 
     $history = new HistoryPerpanjanganM();
