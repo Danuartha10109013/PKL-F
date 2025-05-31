@@ -80,7 +80,7 @@ class PegawaiController extends Controller
         $laporan->save();
         $idss = ProjectM::where('id',$laporan->project_id)->value('id');
         // Redirect or return a response, possibly with a success message
-        return redirect()->route('pegawai.project.laporan',$idss)->with('success', 'Laporan updated successfully.');
+        return redirect()->back()->with('success', 'Laporan updated successfully.');
     }
 
     public function detail ($id){

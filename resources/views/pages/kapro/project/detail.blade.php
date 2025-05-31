@@ -306,8 +306,11 @@ Detail Project || {{$data->judul}}
                           @php
                           $modalId = 'nilaiModal-' . $d->id . '-' . $pid . '-' . $c->created_at->format('YmdHi');
                           $kesamaan = \App\Models\PenilaianM::where('user_id',$d->id)->where('project_id',$pid)->where('created_at',$c->created_at)->value('id');
+                          $kesamaan1 = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$pid)->where('created_at',$c->created_at)->value('id');
                           // dd($c->created_at);
                           $nilaiin = \App\Models\PenilaianM::find($kesamaan);
+                          $laporan = \App\Models\LaporanM::find($kesamaan1);
+                          // dd($laporan);
 
                           $formattedMonth = $c->created_at->format('Y-m');
                           @endphp
@@ -329,38 +332,57 @@ Detail Project || {{$data->judul}}
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                   </div>
                                   <div class="modal-body">
-                                    <form action="{{ route('kapro.project.nilaiUser', ['id' => $d->id, 'pid' => $pid, 'm' => $c->created_at]) }}" method="POST">
-                                          @csrf
-                        
-                                          <div class="mb-3">
-                                            <label for="hasilKerja-{{ $modalId }}" class="form-label">Hasil Kerja (35%)</label>
-                                            <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja-{{ $modalId }}" max="100" min="0" required>
-                                          </div>
-                        
-                                          <div class="mb-3">
-                                              <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
-                                              <input type="number" min="0" max="100" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" max="100" min="0" required>
-                                          </div>
-                        
-                                          <div class="mb-3">
-                                            <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
-                                            <input type="number" min="0" max="100" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" max="100" min="0" required>
-                                          </div>
-                                          
-                                          <div class="mb-3">
-                                            <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
-                                              <input type="text" min="0" max="100" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
-                                          </div>
-                        
-                                          <div class="modal-footer">
-                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                              <button type="submit" class="btn btn-primary">Submit</button>
-                                          </div>
-                        
-                                          <input type="hidden" name="project_id" value="{{ $data->id }}">
-                                          <input type="hidden" name="user_id" value="{{ $d->id }}">
-                                      </form>
-                                    </div>
+                                    @php
+                                        $belumDiisi = [];
+                                        if ($laporan->pencapaian == null) $belumDiisi[] = 'Pencapaian';
+                                        if ($laporan->ringkasan == null) $belumDiisi[] = 'Ringkasan';
+                                        if ($laporan->hasil == null) $belumDiisi[] = 'Hasil';
+                                        if ($laporan->kendala == null) $belumDiisi[] = 'Kendala';
+                                        if ($laporan->solusi == null) $belumDiisi[] = 'Solusi';
+                                    @endphp
+
+                                    @if (empty($belumDiisi))
+
+                                        <form action="{{ route('kapro.project.nilaiUser', ['id' => $d->id, 'pid' => $pid, 'm' => $c->created_at]) }}" method="POST">
+                                            @csrf
+
+                                            <div class="mb-3">
+                                                <label for="hasilKerja-{{ $modalId }}" class="form-label">Hasil Kerja (35%)</label>
+                                                <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja-{{ $modalId }}" max="100" min="0" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
+                                                <input type="number" min="0" max="100" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
+                                                <input type="number" min="0" max="100" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" required>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
+                                                <input type="text" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+
+                                            <input type="hidden" name="project_id" value="{{ $data->id }}">
+                                            <input type="hidden" name="user_id" value="{{ $d->id }}">
+                                        </form>
+                                    @else
+                                        <p><strong>Data Laporan Belum Diisi oleh Pegawai.</strong></p>
+                                        <ul>
+                                            @foreach ($belumDiisi as $item)
+                                                <li>{{ $item }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+
                                   </div>
                                 </div>
                             </div>
