@@ -75,7 +75,7 @@
           <i class="ti ti-file-signal"></i>
         </span>
         <span class="nav-link-title">
-         Perpanjang Kontrak
+         Rekomendasi Perpanjangan Kontrak
         </span>
       </a>
     </li>

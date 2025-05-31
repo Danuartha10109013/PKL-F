@@ -13,7 +13,7 @@ class KontrakM extends Model
     protected $table = 'kontrak';
 
     // Specify the fillable fields for mass assignment
-    protected $fillable = [
+    protected $fillabe=[
         'user_id',
         'project_id',
         'awal_kontrak',
