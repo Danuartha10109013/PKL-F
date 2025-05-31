@@ -20,7 +20,7 @@ class PerpanjangController extends Controller
 // Menentukan total nilai rata-rata per pegawai
 $penilaianGrouped = $penilaian->groupBy('user_id')->map(function ($items) {
     // Menghitung rata-rata nilai total per pegawai
-    $totalScore = $items->avg(function ($item) {
+    $totalScore = $items->avg(function ($item): mixed {
         return ($item->total);
     });
     return $totalScore;
@@ -35,17 +35,17 @@ $results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $p
     // Skor kontrak berdasarkan periode terbaru
     $kontrakUser = $kontrak->where('user_id', $item->user_id)->sortByDesc('periode')->first();
     $kontrakScore = $kontrakUser ? (int) $kontrakUser->periode : 0;
-    
+    // dd($kontrakScore);
     // Menghitung total proyek yang diikuti oleh pegawai
     $projectInvolvement = ProjectM::whereJsonContains('pegawai_id', $item->user_id)->get(); 
     $projectScore = $projectInvolvement->count() > 0 ? log($projectInvolvement->count() + 1) : 0;
-    
+    // dd($projectScore);
     // Ambil nilai total berdasarkan rata-rata untuk pegawai ini
     $totalScore = $penilaianGrouped[$item->user_id] ?? 0;
-    
+    // dd($totalScore);
     // Normalisasi nilai total
     $normalizedTotal = $totalScore / max($penilaianGrouped->values()->toArray()) ;
-
+    // dd(max($penilaianGrouped->values()->toArray()));
     // Bobot untuk setiap parameter
     $weights = [
         'total' => 0.6,  // Bobot untuk total nilai
@@ -97,7 +97,7 @@ $data = $sortedResults->map(function ($item) {
         'projects' => $item['projects'],
     ];
 });
-// dd($data);
+// dd($data);ph
 
         
         return view('pages.manajerhc.perpnajang.index', compact('data'));
