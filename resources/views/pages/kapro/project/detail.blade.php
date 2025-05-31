@@ -339,17 +339,17 @@ Detail Project || {{$data->judul}}
                         
                                           <div class="mb-3">
                                               <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
-                                              <input type="number" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" max="100" min="0" required>
+                                              <input type="number" min="0" max="100" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" max="100" min="0" required>
                                           </div>
                         
                                           <div class="mb-3">
                                             <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
-                                            <input type="number" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" max="100" min="0" required>
+                                            <input type="number" min="0" max="100" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" max="100" min="0" required>
                                           </div>
                                           
                                           <div class="mb-3">
                                             <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
-                                              <input type="text" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
+                                              <input type="text" min="0" max="100" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
                                           </div>
                         
                                           <div class="modal-footer">
