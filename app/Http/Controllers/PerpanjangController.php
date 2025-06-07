@@ -12,96 +12,118 @@ use Illuminate\Http\Request;
 class PerpanjangController extends Controller
 {
 
-    public function index()
-    {
-        $penilaian = PenilaianM::all();
-        $kontrak = KontrakM::all();
-        $proyek = ProjectM::all();  // Replace this with query builder for whereJsonContains
-// Menentukan total nilai rata-rata per pegawai
-$penilaianGrouped = $penilaian->groupBy('user_id')->map(function ($items) {
-    // Menghitung rata-rata nilai total per pegawai
-    $totalScore = $items->avg(function ($item): mixed {
-        return ($item->total);
-    });
-    return $totalScore;
-});
-if ($penilaianGrouped->filter()->isEmpty()) {
-    return redirect()->back()->with('error', 'Belum Ada Penilaian');
-}
+public function index()
+{
+    // Ambil semua data penilaian, kontrak, dan proyek
+    $penilaian = PenilaianM::all();
+    $kontrak = KontrakM::all();
+    $proyek = ProjectM::all();
 
-// dd($penilaianGrouped);
-// Menghitung skor kontrak dan proyek untuk setiap pegawai
-$results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $proyek) {
-    // Skor kontrak berdasarkan periode terbaru
-    $kontrakUser = $kontrak->where('user_id', $item->user_id)->sortByDesc('periode')->first();
-    $kontrakScore = $kontrakUser ? (int) $kontrakUser->periode : 0;
-    // dd($kontrakScore);
-    // Menghitung total proyek yang diikuti oleh pegawai
-    $projectInvolvement = ProjectM::whereJsonContains('pegawai_id', $item->user_id)->get(); 
-    $projectScore = $projectInvolvement->count() > 0 ? log($projectInvolvement->count() + 1) : 0;
-    // dd($projectScore);
-    // Ambil nilai total berdasarkan rata-rata untuk pegawai ini
-    $totalScore = $penilaianGrouped[$item->user_id] ?? 0;
-    // dd($totalScore);
-    // Normalisasi nilai total
-    $normalizedTotal = $totalScore / max($penilaianGrouped->values()->toArray()) ;
-    // dd(max($penilaianGrouped->values()->toArray()));
-    // Bobot untuk setiap parameter
+    // Group penilaian berdasarkan user_id dan hitung rata-rata nilai total per user
+    $penilaianGrouped = $penilaian->groupBy('user_id')->map(function ($items) {
+        return $items->avg('total'); // Rata-rata nilai
+    });
+
+    // Validasi jika tidak ada penilaian
+    if ($penilaianGrouped->filter()->isEmpty()) {
+        return redirect()->back()->with('error', 'Belum Ada Penilaian');
+    }
+
+    // Hitung nilai maksimum dari setiap aspek untuk normalisasi
+    $maxTotal = $penilaianGrouped->max() ?: 1;
+    $maxKontrak = $kontrak->max('periode') ?: 1;
+
+    // Hitung jumlah maksimum proyek yang melibatkan pegawai
+    $maxProjectScore = $proyek->map(function ($proj) {
+        return count(json_decode($proj->pegawai_id, true));
+    })->max();
+    $maxProjectLog = $maxProjectScore > 0 ? log($maxProjectScore + 1) : 1;
+
+    // Bobot masing-masing aspek
     $weights = [
-        'total' => 0.6,  // Bobot untuk total nilai
+        'total' => 0.6,
         'kontrak' => 0.2,
         'project' => 0.2,
     ];
-    // dd($penilaianGrouped);
-    
-    // Perhitungan SAW (Simple Additive Weighting)
-    $total = (
-        $normalizedTotal * $weights['total'] +
-        $kontrakScore * $weights['kontrak'] +
-        $projectScore * $weights['project']
-    );
-    // dd($total);
-    // Hasil akhir untuk setiap pegawai
-    return [
-        'user_id' => $item->user_id,
-        'total' => $total,
-        'periode' => $kontrakScore,
-        'projects' => $projectInvolvement->pluck('judul'),
-    ];
-});
-// dd($results);
-$uniqueResults = collect($results)->groupBy('user_id')->map(function ($group) {
-    // If it's an array, ensure you're treating it as an array and access elements with array notation
-    $firstItem = $group[0]; 
-    $projects = $group->pluck('projects')->flatten()->unique();// Get the first item from the group (array)
-    return [
-        'user_id' => $firstItem['user_id'], // Access 'user_id' directly as array
-        'total' => collect($group)->sum('total'), // Sum the 'total' for the same user_id
-        'periode' => $firstItem['periode'],
-        'projects' => $projects,
-    ];
-});
 
-// dd($uniqueResults);
-
-$sortedResults = $uniqueResults->sortByDesc('total');
-
-
-// Menyimpan data dalam varabel $data
-$data = $sortedResults->map(function ($item) {
-    $user = User::find($item['user_id']);
-    return [
-        'user' => $user,
-        'total' => $item['total'],
-        'periode' => $item['periode'],
-        'projects' => $item['projects'],
-    ];
-});
-// dd($data);ph
-
-        
-        return view('pages.manajerhc.perpnajang.index', compact('data'));
+    // Validasi bobot
+    if (array_sum($weights) !== 1.0) {
+        return redirect()->back()->with('error', 'Total bobot tidak valid. Harus berjumlah 1.');
     }
+
+    // Hitung skor per user
+    $results = $penilaian->map(function ($item) use ($penilaianGrouped, $kontrak, $proyek, $maxTotal, $maxKontrak, $maxProjectLog, $weights) {
+        // Ambil kontrak terakhir user
+        $kontrakUser = $kontrak->where('user_id', $item->user_id)->sortByDesc('periode')->first();
+        $kontrakScore = $kontrakUser ? (int) $kontrakUser->periode : 0;
+        $normalizedKontrak = $kontrakScore / $maxKontrak;
+
+        // Hitung keterlibatan proyek
+        $projectInvolvement = $proyek->filter(function ($proj) use ($item) {
+            $pegawaiIds = json_decode($proj->pegawai_id, true) ?? [];
+            return in_array($item->user_id, $pegawaiIds);
+        });
+        $projectScore = $projectInvolvement->count() > 0 ? log($projectInvolvement->count() + 1) : 0;
+        $normalizedProject = $projectScore / $maxProjectLog;
+
+        // Ambil nilai rata-rata penilaian user
+        $totalScore = $penilaianGrouped[$item->user_id] ?? 0;
+        $normalizedTotal = $totalScore / $maxTotal;
+
+        // Hitung skor akhir dan konversi ke skala 1-100
+        $finalScoreRaw = (
+            $normalizedTotal * $weights['total'] +
+            $normalizedKontrak * $weights['kontrak'] +
+            $normalizedProject * $weights['project']
+        );
+        $finalScore = $finalScoreRaw * 100; // Konversi ke skala 1–100
+
+        // Kembalikan data hasil hitung
+        return [
+            'user_id' => $item->user_id,
+            'total' => $finalScore, // Sudah skala 1–100
+            'periode' => $kontrakScore,
+            'projects' => $projectInvolvement->pluck('judul'),
+        ];
+    });
+
+    // Gabungkan berdasarkan user_id (hindari duplikat user)
+    $uniqueResults = collect($results)->groupBy('user_id')->map(function ($group) {
+        $firstItem = $group->first();
+        $projects = $group->pluck('projects')->flatten()->unique();
+
+        return [
+            'user_id' => $firstItem['user_id'],
+            'total' => collect($group)->avg('total'), // Pakai rata-rata jika ada duplikat
+            'periode' => $firstItem['periode'],
+            'projects' => $projects,
+        ];
+    });
+
+    // Filter user dengan skor >= 60
+    $filteredResults = $uniqueResults->filter(function ($item) {
+        return $item['total'] >= 60;
+    });
+
+    // Urutkan skor dari tertinggi ke terendah
+    $sortedResults = $filteredResults->sortByDesc('total');
+
+    // Ambil user data untuk ditampilkan
+    $data = $sortedResults->map(function ($item) {
+        $user = User::find($item['user_id']);
+        return [
+            'user' => $user,
+            'total' => round($item['total'], 2), // Bulatkan dua angka desimal
+            'periode' => $item['periode'],
+            'projects' => $item['projects'],
+        ];
+    });
+
+    // Kirim ke view
+    return view('pages.manajerhc.perpnajang.index', compact('data'));
+}
+
+
     
 
 

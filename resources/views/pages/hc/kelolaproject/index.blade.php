@@ -417,13 +417,37 @@ Kelola Project || Human Capital
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label class="form-label">Kode Unit kerja</label>
-                  <input type="text" class="form-control" name="kode_uk" placeholder="Isi Kode Unit kerja"></input>
-                </div>   
+                  <label class="form-label">Unit kerja</label>
+                  @php
+                    $unit_kerja = \App\Models\UnitKerjaM::orderBy('unit_kerja','asc')->get();
+                  @endphp
+                  <select class="form-control" name="unit_kerja" id="unit_kerja_select">
+                    <option value="" selected disabled>--Pilih Unit Kerja</option>
+                    @foreach ($unit_kerja as $uk)
+                      <option value="{{ $uk->unit_kerja }}" data-kode="{{ $uk->kode_unit_kerja }}">
+                        {{ $uk->unit_kerja }}
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+
                 <div class="mb-3">
-                  <label class="form-label"> Unit kerja</label>
-                  <input type="text" class="form-control" name="unit_kerja" placeholder="Isi Unit kerja"></input>
-                </div>  
+                  <label class="form-label">Kode Unit Kerja</label>
+                  <input type="text" class="form-control" name="kode_uk" id="kode_uk_input" placeholder="Isi Kode Unit Kerja" readonly>
+                </div>
+                <script>
+                  document.addEventListener('DOMContentLoaded', function () {
+                    const unitKerjaSelect = document.getElementById('unit_kerja_select');
+                    const kodeUkInput = document.getElementById('kode_uk_input');
+
+                    unitKerjaSelect.addEventListener('change', function () {
+                      const selectedOption = this.options[this.selectedIndex];
+                      const kodeUk = selectedOption.getAttribute('data-kode');
+                      kodeUkInput.value = kodeUk || '';
+                    });
+                  });
+                </script>
+
                 <div class="mb-3">
                   <label class="form-label">Status project</label>
                   <select type="text" class="form-control" name="statusin" placeholder="Isi Dept Operasi">

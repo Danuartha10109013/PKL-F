@@ -63,7 +63,7 @@
                                             Masih dalam Kontrak
                                             @else
                                             <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $item['user']->id  }}">
-                                                <i class=""></i> Perpanjang
+                                                <i class=""></i> Update Status
                                               </a>
                             
                                               <!-- Modal Structure -->
@@ -78,18 +78,45 @@
                                                           <form action="{{ route('manajerhc.perpanjang.post', $kontrak ) }}" method="POST">
                                                             @csrf
                                                             <div class="modal-body">
-                                                                <!-- Start Date Input (Default to Today) -->
+                                                                <!-- Select Status -->
                                                                 <div class="mb-3">
-                                                                    <label for="startDate" class="form-label">Start Date</label>
-                                                                    <input type="date" name="start_date" id="startDate" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" required>
+                                                                    <label for="status" class="form-label">Status</label>
+                                                                    <select name="status" id="status" class="form-control" required>
+                                                                        <option value="" selected disabled>--Pilih Status--</option>
+                                                                        <option value="Diperpanjang">Diperpanjang</option>
+                                                                        <option value="Tidak Diperpanjang">Tidak Diperpanjang</option>
+                                                                    </select>
                                                                 </div>
-                            
-                                                                <!-- End Date Input (User Selected) -->
-                                                                <div class="mb-3">
+
+                                                                <!-- Start Date (Hidden unless 'Diperpanjang') -->
+                                                                <div class="mb-3 tanggal-group" style="display: none;">
+                                                                    <label for="startDate" class="form-label">Start Date</label>
+                                                                    <input type="date" name="start_date" id="startDate" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                                                                </div>
+
+                                                                <!-- End Date (Hidden unless 'Diperpanjang') -->
+                                                                <div class="mb-3 tanggal-group" style="display: none;">
                                                                     <label for="endDate" class="form-label">End Date</label>
-                                                                    <input type="date" name="end_date" id="endDate" class="form-control" required>
+                                                                    <input type="date" name="end_date" id="endDate" class="form-control">
                                                                 </div>
                                                             </div>
+
+                                                            {{-- Tambahkan script di bawah sebelum </body> atau di @section('scripts') --}}
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function () {
+                                                                    const statusSelect = document.getElementById('status');
+                                                                    const dateFields = document.querySelectorAll('.tanggal-group');
+
+                                                                    statusSelect.addEventListener('change', function () {
+                                                                        if (this.value === 'Diperpanjang') {
+                                                                            dateFields.forEach(field => field.style.display = 'block');
+                                                                        } else {
+                                                                            dateFields.forEach(field => field.style.display = 'none');
+                                                                        }
+                                                                    });
+                                                                });
+                                                            </script>
+
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                 <button type="submit" class="btn btn-success">Save Changes</button>
@@ -100,7 +127,12 @@
                                               </div>
                                             @endif
                                         </td>
-                                        <td>{{$kontrak_value->status ?? 'Belum Diperpanjang'}}</td>
+                                        @php
+                                            $status = $kontrak_value->status ?? 'Belum Diperpanjang';
+                                            $textClass = $status === 'Diperpanjang' ? 'success' : 'danger';
+                                        @endphp
+
+                                        <td class="text text-{{ $textClass }}">{{ $status }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

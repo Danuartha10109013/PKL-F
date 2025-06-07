@@ -198,38 +198,58 @@ public function delete($id)
 public function perpanjang(Request $request,$id){
     // dd($request->all());
     $data = KontrakM::find($id);
-    $data->awal_kontrak = $request->start_date;
-    $data->akhir_kontrak = $request->end_date;
-    $data->periode = $data->periode + 1;
-    $data->status = 'Sudah Diperpanjang';
-    $data->save();
+    if($request->status == 'Tidak Diperpanjang'){
+        $data->awal_kontrak = $request->start_date;
+        $data->akhir_kontrak = $request->start_date;
+        $data->periode = $data->periode + 1;
+        $data->status = 'Tidak Diperpanjang';
+        $data->save();
+        $user = User::find($data->user_id);
+        $user->active = 0;
+        $user->save();
+        return redirect()->back()->with('success', 'Kontrak Atas Nama '.$user->name.' Tidak diperpanjang dan Telah dinonaktifkan');
 
-    $history = new HistoryPerpanjanganM();
-    $history->user_id = $data->user_id;
-    $history->jumlah_perpanjangan = $data->periode + 1;
-    $history->awal = $request->start_date;
-    $history->akhir = $request->end_date;
-    $history->tanggal_perpanjangan = now()->format('Y-m-d');
-    $history->save();
+    }else{
 
-    $notif = NotifM::create([
-        'title' => "Perpanjangan Kontrak",
-        'value' => "Selamat, kontrak kamu telah diperpanjang sampai dengan " . $data->akhir_kontrak,
-        'status' => 0,
-        'user_id' => $data->user_id,
-    ]);
+        $data->awal_kontrak = $request->start_date;
+        $data->akhir_kontrak = $request->end_date;
+        $data->periode = $data->periode + 1;
+        $data->status = 'Sudah Diperpanjang';
+        $data->save();
+    
+        $history = new HistoryPerpanjanganM();
+        $history->user_id = $data->user_id;
+        $history->jumlah_perpanjangan = $data->periode + 1;
+        $history->awal = $request->start_date;
+        $history->akhir = $request->end_date;
+        $history->tanggal_perpanjangan = now()->format('Y-m-d');
+        $history->save();
+    
+        $notif = NotifM::create([
+            'title' => "Perpanjangan Kontrak",
+            'value' => "Selamat, kontrak kamu telah diperpanjang sampai dengan " . $data->akhir_kontrak,
+            'status' => 0,
+            'user_id' => $data->user_id,
+        ]);
 
-    // Kirim notifikasi via broadcast
-    // event(new \App\Events\NotifikasiBaru($notif));
-
-    NotifEvent::dispatch($notif);
+        $user = User::find($data->user_id);
+        if ($user->active == 0){
+            $user->active = 1;
+            $user->save();
+        }
+    
+        // Kirim notifikasi via broadcast
+        // event(new \App\Events\NotifikasiBaru($notif));
+    
+        NotifEvent::dispatch($notif);
+        return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
+    }
     
 
     
 
     
 
-    return redirect()->back()->with('success', 'Kontrak telah diperpanjang');
 }
 
 public function export(){

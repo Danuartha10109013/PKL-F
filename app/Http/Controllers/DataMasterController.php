@@ -6,6 +6,7 @@ use App\Models\DepartementM;
 use App\Models\KategoriM;
 use App\Models\StatusM;
 use App\Models\StrategicM;
+use App\Models\UnitKerjaM;
 use Illuminate\Http\Request;
 
 class DataMasterController extends Controller
@@ -15,12 +16,15 @@ class DataMasterController extends Controller
         $status = StatusM::all();
         $departement = DepartementM::all();
         $strategic = StrategicM::all();
+        $uk = UnitKerjaM::all();
+        // dd($uk);
 
-        return view('pages.hc.data.index', compact('kategori','status','departement','strategic'));
+        return view('pages.hc.data.index', compact('kategori','status','departement','strategic','uk'));
     }
 
     public function store(Request $request, $type)
     {
+        // dd($request->all());
         if($type == 'kategori'){
             KategoriM::create([
                 'kategori' => $request->value,
@@ -37,6 +41,11 @@ class DataMasterController extends Controller
         }elseif($type == 'departement'){
             DepartementM::create([
                 'departement' => $request->value,
+            ]);
+        }elseif($type == 'uk'){
+            UnitKerjaM::create([
+                'unit_kerja' => $request->unit_kerja,
+                'kode_unit_kerja' => $request->kode_unit_kerja,
             ]);
         }else {
             return back()->with('error', 'Tipe tidak dikenali.');
@@ -66,6 +75,11 @@ class DataMasterController extends Controller
             $data = DepartementM::find($id);
             $data->departement = $request->departement;
             $data->save();
+        }elseif($request->tipe == 'uk'){
+            $data = UnitKerjaM::find($id);
+            $data->unit_kerja = $request->unit_kerja;
+            $data->kode_unit_kerja = $request->kode_unit_kerja;
+            $data->save();
         }else {
             return back()->with('error', 'Tipe tidak dikenali.');
         }
@@ -93,6 +107,9 @@ class DataMasterController extends Controller
             $data->delete();
         }elseif($request->tipe == 'departement'){
             $data = DepartementM::find($id);
+            $data->delete();
+        }elseif($request->tipe == 'uk'){
+            $data = UnitKerjaM::find($id);
             $data->delete();
         }else {
             return back()->with('error', 'Tipe tidak dikenali.');

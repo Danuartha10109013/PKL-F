@@ -283,17 +283,17 @@ Detail Project || {{$data->judul}}
                           @php
 
                           // dd($project);
-                          $pid = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
-                                  ->where('id', $data->id)
-                                  ->value('id');
+                            $pid = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
+                                    ->where('id', $data->id)
+                                    ->value('id');
 
                             // dd($satu);
                             $b= \App\Models\ProjectM::find($pid);
                             $cc = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$b->id)->orderBy('created_at','desc')->get();
                             $project = $data->id;
-                          $ids = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->count();
-                          $total = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->average('total');
-                          // dd($total);
+                            $ids = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->count();
+                            $total = \App\Models\PenilaianM::where('user_id', $d->id)->where('project_id',$project)->average('total');
+                            // dd($total);
                           @endphp
                    
                         
@@ -301,215 +301,222 @@ Detail Project || {{$data->judul}}
                       Sudah DIniliai
                       @elseif ($data->status == 2) --}}
                         {{-- @if (Auth::user()->role == 2) --}}
-                        <div id="laporanLists{{$d->id}}">
-                          @foreach ($cc as $c)
-                          @php
-                          $modalId = 'nilaiModal-' . $d->id . '-' . $pid . '-' . $c->created_at->format('YmdHi');
-                          $kesamaan = \App\Models\PenilaianM::where('user_id',$d->id)->where('project_id',$pid)->where('created_at',$c->created_at)->value('id');
-                          $kesamaan1 = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$pid)->where('created_at',$c->created_at)->value('id');
-                          // dd($c->created_at);
-                          $nilaiin = \App\Models\PenilaianM::find($kesamaan);
-                          $laporan = \App\Models\LaporanM::find($kesamaan1);
-                          // dd($laporan);
-
-                          $formattedMonth = $c->created_at->format('Y-m');
-                          @endphp
-                            @if ($nilaiin->total == null)
-                              @if(Auth::user()->role == 2)
-                                <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
-                                  Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
-                                </button> <br><br>
-                                @endif
-                            @else
-                              <button data-month="{{ $formattedMonth }}" class="laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Laporan {{ $c->created_at->format('M Y') }} Sudah Diniliai </button> <br><br>
-                            @endif
-                            <!-- Modal for scoring -->
-                            <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="{{ $modalId }}Label">Beri Nilai untuk {{ $d->name }} -> {{ $c->created_at->format('M Y') }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                    @php
-                                        $belumDiisi = [];
-                                        if ($laporan->pencapaian == null) $belumDiisi[] = 'Pencapaian';
-                                        if ($laporan->ringkasan == null) $belumDiisi[] = 'Ringkasan';
-                                        if ($laporan->hasil == null) $belumDiisi[] = 'Hasil';
-                                        if ($laporan->kendala == null) $belumDiisi[] = 'Kendala';
-                                        if ($laporan->solusi == null) $belumDiisi[] = 'Solusi';
-                                    @endphp
-
-                                    @if (empty($belumDiisi))
-
-                                        <form action="{{ route('kapro.project.nilaiUser', ['id' => $d->id, 'pid' => $pid, 'm' => $c->created_at]) }}" method="POST">
-                                            @csrf
-
-                                            <div class="mb-3">
-                                                <label for="hasilKerja-{{ $modalId }}" class="form-label">Hasil Kerja (35%)</label>
-                                                <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja-{{ $modalId }}" max="100" min="0" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
-                                                <input type="number" min="0" max="100" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
-                                                <input type="number" min="0" max="100" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" required>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
-                                                <input type="text" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-
-                                            <input type="hidden" name="project_id" value="{{ $data->id }}">
-                                            <input type="hidden" name="user_id" value="{{ $d->id }}">
-                                        </form>
-                                    @else
-                                        <p><strong>Data Laporan Belum Diisi oleh Pegawai.</strong></p>
-                                        <ul>
-                                            @foreach ($belumDiisi as $item)
-                                                <li>{{ $item }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-
-                                  </div>
-                                </div>
-                            </div>
-                              
-                              @endforeach
-                        </div>
-
-                            
-                          @if ($data->status == 0)_
+                        @if ($data->status == 0)_
                           <!-- Delete button triggers modal -->
                           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $d->id }}">
                               Delete
                           </button>
 
-                          @else
+                        @else
+                          <div id="laporanLists{{$d->id}}">
+                            @foreach ($cc as $c)
+                              @php
+                                  $modalId = 'nilaiModal-' . $d->id . '-' . $pid . '-' . $c->created_at->format('YmdHi');
+                                  $kesamaan = \App\Models\PenilaianM::where('user_id', $d->id)
+                                      ->where('project_id', $pid)
+                                      ->where('created_at', $c->created_at)
+                                      ->value('id');
+                                  $kesamaan1 = \App\Models\LaporanM::where('user_id', $d->id)
+                                      ->where('project_id', $pid)
+                                      ->where('created_at', $c->created_at)
+                                      ->value('id');
+
+                                  $nilaiin = \App\Models\PenilaianM::find($kesamaan);
+                                  $laporan = \App\Models\LaporanM::find($kesamaan1);
+
+                                  $formattedMonth = $c->created_at->format('Y-m');
+                              @endphp
+
+                              @if ($nilaiin->total == null && Auth::user()->role == 2)
+                                  <button data-month="{{ $formattedMonth }}" type="button" class="btn btn-success laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                                      Beri Nilai Laporan {{ $c->created_at->format('M Y') }}
+                                  </button><br><br>
+                              @else
+                                  <button data-month="{{ $formattedMonth }}" class="laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">
+                                      Laporan {{ $c->created_at->format('M Y') }} Sudah Dinilai
+                                  </button><br><br>
+                              @endif
+
+                              <!-- Modal for scoring -->
+                              <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <h5 class="modal-title" id="{{ $modalId }}Label">
+                                                  Beri Nilai untuk {{ $d->name }} -> {{ $c->created_at->format('M Y') }}
+                                              </h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              @php
+                                                  $belumDiisi = [];
+                                                  if ($laporan->pencapaian == null) $belumDiisi[] = 'Pencapaian';
+                                                  if ($laporan->ringkasan == null) $belumDiisi[] = 'Ringkasan';
+                                                  if ($laporan->hasil == null) $belumDiisi[] = 'Hasil';
+                                                  if ($laporan->kendala == null) $belumDiisi[] = 'Kendala';
+                                                  if ($laporan->solusi == null) $belumDiisi[] = 'Solusi';
+                                              @endphp
+
+                                              @if (empty($belumDiisi))
+                                                  <form action="{{ route('kapro.project.nilaiUser', ['id' => $d->id, 'pid' => $pid, 'm' => $c->created_at]) }}" method="POST">
+                                                      @csrf
+
+                                                      <div class="mb-3">
+                                                          <label for="hasilKerja-{{ $modalId }}" class="form-label">Hasil Kerja (35%)</label>
+                                                          <input type="number" name="hasil_kerja" class="form-control" id="hasilKerja-{{ $modalId }}" max="100" min="0" required>
+                                                      </div>
+
+                                                      <div class="mb-3">
+                                                          <label for="kualitasKerja-{{ $modalId }}" class="form-label">Kualitas Kerja (40%)</label>
+                                                          <input type="number" min="0" max="100" name="kualitas_kerja" class="form-control" id="kualitasKerja-{{ $modalId }}" required>
+                                                      </div>
+
+                                                      <div class="mb-3">
+                                                          <label for="kepatuhanSOP-{{ $modalId }}" class="form-label">Kepatuhan SOP (25%)</label>
+                                                          <input type="number" min="0" max="100" name="kepatuhan_sop" class="form-control" id="kepatuhanSOP-{{ $modalId }}" required>
+                                                      </div>
+
+                                                      <div class="mb-3">
+                                                          <label for="keterangan-{{ $modalId }}" class="form-label">Keterangan</label>
+                                                          <input type="text" name="keterangan" class="form-control" id="keterangan-{{ $modalId }}">
+                                                      </div>
+
+                                                      <div class="modal-footer">
+                                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                          <button type="submit" class="btn btn-primary">Submit</button>
+                                                      </div>
+
+                                                      <input type="hidden" name="project_id" value="{{ $data->id }}">
+                                                      <input type="hidden" name="user_id" value="{{ $d->id }}">
+                                                  </form>
+                                              @else
+                                                  <p><strong>Data Laporan Belum Diisi oleh Pegawai.</strong></p>
+                                                  <ul>
+                                                      @foreach ($belumDiisi as $item)
+                                                          <li>{{ $item }}</li>
+                                                      @endforeach
+                                                  </ul>
+                                              @endif
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          @endforeach
+
+                          </div>
+                                  <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="deleteModalLabel{{ $d->id }}">Confirm Delete</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  Are you sure you want to delete {{ $d->name }}?
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                  <form action="{{ route('kapro.project.delete.user', ['id'=>$d->id, 'pid'=> $data->id]) }}" method="POST">
+                                                      @csrf
+                                                      @method('DELETE')
+                                                      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </td>
+                            @if ($data->status !== null)
+                              <td>
+                                {{$total}}
+                              </td>
+                              <td id="laporan">
+                                <input type="month" class="mb-2" id="filterMonth{{$d->id}}">
+                                
+                                <script>
+                                  document.addEventListener("DOMContentLoaded", function () {
+                                      const userId = "{{ $d->id }}";
+                                      const monthInput = document.getElementById('filterMonth' + userId);
+                                      const laporanList = document.getElementById('laporanList' + userId);
+                                      const laporanLists = document.getElementById('laporanLists' + userId); // tambahan
+                              
+                                      monthInput.addEventListener('change', function () {
+                                          const val = monthInput.value; // Format: "2025-04"
+                                          if (!val) return;
+                              
+                                          const processList = (container, containerLabel) => {
+                                              if (!container) return;
+                              
+                                              const items = Array.from(container.querySelectorAll('.laporan-item'));
+                                              const matching = [];
+                                              const nonMatching = [];
+                              
+                                              items.forEach(item => {
+                                                  if (item.dataset.month === val) {
+                                                      matching.push(item);
+                                                  } else {
+                                                      nonMatching.push(item);
+                                                  }
+                                              });
+                              
+                                              container.innerHTML = '';
+                              
+                                              matching.forEach((item, index) => {
+                                                  const cloned = item.cloneNode(true);
+                                                  cloned.style.display = 'inline-block';
+                                                  cloned.id = `matching-${containerLabel}-${userId}-${index}`;
+                                                  container.appendChild(cloned);
+                                                  container.appendChild(document.createElement('br'));
+                                                  container.appendChild(document.createElement('br'));
+                                              });
+                              
+                                              nonMatching.forEach((item, index) => {
+                                                  const hiddenItem = item.cloneNode(true);
+                                                  hiddenItem.style.display = 'none';
+                                                  hiddenItem.id = `nonmatching-${containerLabel}-${userId}-${index}`;
+                                                  container.appendChild(hiddenItem);
+                                                  container.appendChild(document.createElement('br'));
+                                                  container.appendChild(document.createElement('br'));
+                                              });
+                                          };
+                              
+                                          processList(laporanList, 'list');
+                                          processList(laporanLists, 'lists');
+                                      });
+                                  });
+                                </script>
+                                @php
+                                  $satu = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
+                                        ->where('id', $data->id)
+                                        ->value('id');
+          
+                                  $dua= \App\Models\ProjectM::find($satu);
+                                  $tiga = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$dua->id)->orderBy('created_at','desc')->get();
+                                @endphp  
+                                <div id="laporanList{{$d->id}}">
+                                  @foreach ($tiga as $t)
+                                  @php
+                                    $formattedMonth = $t->created_at->format('Y-m');
+                                    $isFilled = $t->pencapaian && $t->ringkasan && $t->hasil && $t->kendala && $t->solusi;
+                                    $btnClass = $isFilled ? 'success' : 'primary';
+                                    // dd($isFilled);
+                                  @endphp
+                                  @if (Auth::user()->role == 0 )
+                                  <a data-month="{{ $formattedMonth }}" href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-{{$btnClass}} laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                                  @elseif (Auth::user()->role == 3)
+                                  <a data-month="{{ $formattedMonth }}" href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at]) }}" class="btn btn-{{$btnClass}} laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                                  @elseif (Auth::user()->role == 2)
+                                  <a data-month="{{ $formattedMonth }}" href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-{{$btnClass}} laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
+                                  @endif
+                                  @endforeach 
+                                </div>
+                              </td>
+                            @else
+                            @endif
                           @endif
                         {{-- @else
                         @endif --}}
-                            <div class="modal fade" id="deleteModal{{ $d->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $d->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ $d->id }}">Confirm Delete</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete {{ $d->name }}?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form action="{{ route('kapro.project.delete.user', ['id'=>$d->id, 'pid'=> $data->id]) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        @if ($data->status !== null)
-                        <td>
-                          {{$total}}
-                        </td>
-                        <td id="laporan">
-                          <input type="month" class="mb-2" id="filterMonth{{$d->id}}">
-                          
-                          <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const userId = "{{ $d->id }}";
-                                const monthInput = document.getElementById('filterMonth' + userId);
-                                const laporanList = document.getElementById('laporanList' + userId);
-                                const laporanLists = document.getElementById('laporanLists' + userId); // tambahan
-                        
-                                monthInput.addEventListener('change', function () {
-                                    const val = monthInput.value; // Format: "2025-04"
-                                    if (!val) return;
-                        
-                                    const processList = (container, containerLabel) => {
-                                        if (!container) return;
-                        
-                                        const items = Array.from(container.querySelectorAll('.laporan-item'));
-                                        const matching = [];
-                                        const nonMatching = [];
-                        
-                                        items.forEach(item => {
-                                            if (item.dataset.month === val) {
-                                                matching.push(item);
-                                            } else {
-                                                nonMatching.push(item);
-                                            }
-                                        });
-                        
-                                        container.innerHTML = '';
-                        
-                                        matching.forEach((item, index) => {
-                                            const cloned = item.cloneNode(true);
-                                            cloned.style.display = 'inline-block';
-                                            cloned.id = `matching-${containerLabel}-${userId}-${index}`;
-                                            container.appendChild(cloned);
-                                            container.appendChild(document.createElement('br'));
-                                            container.appendChild(document.createElement('br'));
-                                        });
-                        
-                                        nonMatching.forEach((item, index) => {
-                                            const hiddenItem = item.cloneNode(true);
-                                            hiddenItem.style.display = 'none';
-                                            hiddenItem.id = `nonmatching-${containerLabel}-${userId}-${index}`;
-                                            container.appendChild(hiddenItem);
-                                            container.appendChild(document.createElement('br'));
-                                            container.appendChild(document.createElement('br'));
-                                        });
-                                    };
-                        
-                                    processList(laporanList, 'list');
-                                    processList(laporanLists, 'lists');
-                                });
-                            });
-                        </script>
-                        
-                        
-                        
-                          @php
-                            $satu = \App\Models\ProjectM::whereJsonContains('pegawai_id', (string)$d->id)
-                                  ->where('id', $data->id)
-                                  ->value('id');
-
-                            $dua= \App\Models\ProjectM::find($satu);
-                            $tiga = \App\Models\LaporanM::where('user_id',$d->id)->where('project_id',$dua->id)->orderBy('created_at','desc')->get();
-                          @endphp  
-                          <div id="laporanList{{$d->id}}">
-                            @foreach ($tiga as $t)
-                            @php
-                              $formattedMonth = $t->created_at->format('Y-m');
-                            @endphp
-                            @if (Auth::user()->role == 0 )
-                            <a data-month="{{ $formattedMonth }}" href="{{route('hc.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
-                            @elseif (Auth::user()->role == 3)
-                            <a data-month="{{ $formattedMonth }}" href="{{ route('manajerhc.project.laporanpegawai', ['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at]) }}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
-                            @elseif (Auth::user()->role == 2)
-                            <a data-month="{{ $formattedMonth }}" href="{{route('kapro.project.laporan',['id' => $d->id, 'id1' => $data->id, 'm' => $t->created_at])}}" class="btn btn-primary laporan-item" id="btn-{{ $d->id }}-{{ $loop->index }}">Lihat Laporan -> {{$t->created_at->format('M')}} {{ $t->created_at->format('Y')}}</a> <br><br>
-                            @endif
-                            @endforeach 
-                          </div>
-                        </td>
-                        @else
-                        @endif
                       </tr>
                     @endforeach
                   @endif
