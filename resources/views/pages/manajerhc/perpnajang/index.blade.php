@@ -62,9 +62,12 @@
                                             @if ($remainingDays < 0)
                                             Masih dalam Kontrak
                                             @else
+                                            @if ($kontrak_value->status !== 'Tidak Diperpanjang')
+                                                
                                             <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $item['user']->id  }}">
                                                 <i class=""></i> Update Status
-                                              </a>
+                                            </a>
+                                            @endif
                             
                                               <!-- Modal Structure -->
                                               <div class="modal fade" id="perpanjangModal-{{ $item['user']->id  }}" tabindex="-1" aria-labelledby="perpanjangModalLabel-{{ $item['user']->id  }}" aria-hidden="true">
