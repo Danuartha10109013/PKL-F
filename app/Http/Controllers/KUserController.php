@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Events\NotifikasiBaru;
+use App\Mail\KontrakMailler;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class KUserController extends Controller
 {
@@ -207,6 +210,15 @@ public function perpanjang(Request $request,$id){
         $user = User::find($data->user_id);
         $user->active = 0;
         $user->save();
+         $now = Carbon::now()->translatedFormat('d F Y');
+        $data = [
+            'nama' => $user->name,
+            'judul' => 'PT. WIKA ',
+            'status' => 'Tidak Diperpanjang',
+            'date' => $now
+        ];
+
+        Mail::to($user->email)->send(new KontrakMailler($data));
         return redirect()->back()->with('success', 'Kontrak Atas Nama '.$user->name.' Tidak diperpanjang dan Telah dinonaktifkan');
 
     }else{

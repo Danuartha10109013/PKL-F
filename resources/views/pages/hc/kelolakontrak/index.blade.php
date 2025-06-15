@@ -95,9 +95,9 @@ Kelola Kontrak || Human Capital
                   <!-- Trigger Button -->
                   @if (Auth::user()->role == 3)
 
-                  <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $d->id }}">
+                  {{-- <a href="javascript:void(0)" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#perpanjangModal-{{ $d->id }}">
                     <i class=""></i> Perpanjang
-                  </a>
+                  </a> --}}
 
                   <!-- Modal Structure -->
                   <div class="modal fade" id="perpanjangModal-{{ $d->id }}" tabindex="-1" aria-labelledby="perpanjangModalLabel-{{ $d->id }}" aria-hidden="true">

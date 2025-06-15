@@ -102,7 +102,7 @@ public function index()
 
     // Filter user dengan skor >= 60
     $filteredResults = $uniqueResults->filter(function ($item) {
-        return $item['total'] >= 60;
+        return $item['total'] >= 0;
     });
 
     // Urutkan skor dari tertinggi ke terendah
