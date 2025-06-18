@@ -29,6 +29,7 @@
                                     <th>Total Nilai</th>
                                     <th>Periode Kontrak</th>
                                     <th>Riwayat Proyek</th>
+                                    <th>Hasil Penilaian</th>
                                     <th>Action</th>
                                     <th>Status</th>
                                 </tr>
@@ -50,6 +51,7 @@
                                                 @endforeach
                                             </ul>
                                         </td>
+                                        <td>{{$item['total'] >= 60 ? 'Diperpanjang' : 'Tidak Diperpanjang'}}</td>
                                         <td>
                                             @php
                                                 $kontrak = \App\Models\KontrakM::where('user_id', $item['user']->id)->value('id');
